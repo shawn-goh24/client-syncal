@@ -25,3 +25,28 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+.group-button {
+  background-color: gray;
+  border-radius: 100%;
+  transition: border-radius 100ms linear, background-color 100ms linear;
+}
+
+.group-button:hover {
+  background-color: violet;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.group-button-active {
+  background-color: violet;
+  border-radius: 10px;
+}
+
+.rdp-day_today:not(.rdp-day_outside) {
+  color: red;
+}
+
+.rdp-row:has(.rdp-day_selected) {
+  background-color: lightgray;
+}
