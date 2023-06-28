@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import FullCalendar from "@fullcalendar/react";
 import multiMonthPlugin from "@fullcalendar/multimonth";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -6,7 +6,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
 import interactionPlugin from "@fullcalendar/interaction";
 import moment from "moment";
-import { useState, createRef } from "react";
+import { useState } from "react";
 import {
   Avatar,
   Button,
@@ -27,6 +27,7 @@ import {
   subWeeks,
   subYears,
 } from "date-fns";
+import { AccessTokenContext } from "../pages/home/index";
 
 const eventLists = [
   {
@@ -106,6 +107,8 @@ export default function Calendar({
   // const calendarRef = createRef();
   const today = new Date();
 
+  const accessToken = useContext(AccessTokenContext);
+
   useEffect(() => {
     if (selectedDate.toLocaleDateString() !== today.toLocaleDateString()) {
       // calendarRef.current.calendar.select(new Date("22/06/23"));
@@ -149,18 +152,23 @@ export default function Calendar({
     console.log(info.event.allDay);
   };
 
+  // To be deleted
   const handleTestButton = () => {
-    console.log(calendarRef.current.calendar.currentData);
-    console.log(calendarRef.current.calendar.currentData.viewTitle);
-    setSelectedDate(
-      new Date(calendarRef.current.calendar.currentData.viewTitle)
-    );
-  };
-
-  const handleuser = async () => {
-    const res = await fetch(`/api/testing`);
-    const result = await res.json();
-    console.log(result);
+    // console.log(calendarRef.current.calendar.currentData);
+    // console.log(calendarRef.current.calendar.currentData.viewTitle);
+    // setSelectedDate(
+    //   new Date(calendarRef.current.calendar.currentData.viewTitle)
+    // );
+    async function getUser() {
+      const res = await fetch("http://localhost:8080/user", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      const users = await res.json();
+      console.log(users);
+    }
+    getUser();
   };
 
   return (
@@ -318,7 +326,7 @@ export default function Calendar({
         // eventMouseEnter={handleEventClick}
         // eventContent={renderEventContent}
       />
-      <button onClick={handleuser}>Test</button>
+      <button onClick={handleTestButton}>Test</button> {/* To be deleted */}
     </div>
   );
 }
