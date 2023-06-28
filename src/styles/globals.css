@@ -30,6 +30,8 @@ body {
   background-color: gray;
   border-radius: 100%;
   transition: border-radius 100ms linear, background-color 100ms linear;
+  height: 100%;
+  width: 100%;
 }
 
 .group-button:hover {
@@ -41,6 +43,8 @@ body {
 .group-button-active {
   background-color: violet;
   border-radius: 10px;
+  height: 100%;
+  width: 100%;
 }
 
 .rdp-day_today:not(.rdp-day_outside) {

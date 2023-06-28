@@ -1,10 +1,16 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import syncalLogo from "../assets/syncal-logo.svg";
 import { Box, Center, Tooltip } from "@chakra-ui/react";
 import grpImg1 from "../assets/broccoli.jpg";
 import grpImg2 from "../assets/broc.jpg";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import {
+  AccessTokenContext,
+  UserContext,
+  getServerSideProps,
+} from "@/pages/home";
+import axios from "axios";
 
 const groupObjects = [
   {
@@ -35,7 +41,10 @@ const groupObjects = [
 
 export default function Sidebar() {
   const [selected, setSelected] = useState(0);
+  const [calendars, setCalendars] = useState();
   const router = useRouter();
+  const accessToken = useContext(AccessTokenContext);
+  const currUser = useContext(UserContext);
 
   const handleSelectGroup = (id) => {
     setSelected(id);
@@ -45,6 +54,16 @@ export default function Sidebar() {
     router.push("/api/auth/logout");
   };
 
+  const getGroupsApi = async (id) => {
+    const res = await axios.get(`http://localhost:8080/user/group/${id}`);
+    console.log(res.data.Calendars);
+    setCalendars(res.data.Calendars);
+  };
+
+  useEffect(() => {
+    currUser && getGroupsApi(currUser.id);
+  }, [currUser]);
+
   return (
     <Box bg="blue.100" width="75px" minHeight="100vh">
       <Center py="10px">
@@ -52,34 +71,35 @@ export default function Sidebar() {
       </Center>
       <Center h="1px" border="1px solid gray" m="0 0 10px 0" />
       <Center flexDirection="column">
-        {groupObjects.map((image, id) => (
-          <Tooltip key={id} hasArrow label={image.name} placement="right">
-            <Box boxSize="50px" my="6px">
-              {image.url ? (
-                <Image
-                  className={
-                    selected === id ? "group-button-active" : "group-button"
-                  }
-                  width="100%"
-                  height="100%"
-                  src={image.url}
-                  alt="grpImg"
-                  onClick={() => handleSelectGroup(id)}
-                />
-              ) : (
-                <Center
-                  boxSize="50px"
-                  className={
-                    selected === id ? "group-button-active" : "group-button"
-                  }
-                  onClick={() => handleSelectGroup(id)}
-                >
-                  <p style={{ color: "white" }}>{image.name.charAt(0)}</p>
-                </Center>
-              )}
-            </Box>
-          </Tooltip>
-        ))}
+        {calendars &&
+          calendars.map((calendar, id) => (
+            <Tooltip key={id} hasArrow label={calendar.name} placement="right">
+              <Box boxSize="50px" my="6px">
+                {calendar.imageUrl ? (
+                  <Image
+                    className={
+                      selected === id ? "group-button-active" : "group-button"
+                    }
+                    width="50"
+                    height="50"
+                    src={calendar.imageUrl}
+                    alt={calendar.name}
+                    onClick={() => handleSelectGroup(id)}
+                  />
+                ) : (
+                  <Center
+                    boxSize="50px"
+                    className={
+                      selected === id ? "group-button-active" : "group-button"
+                    }
+                    onClick={() => handleSelectGroup(id)}
+                  >
+                    <p style={{ color: "white" }}>{calendar.name.charAt(0)}</p>
+                  </Center>
+                )}
+              </Box>
+            </Tooltip>
+          ))}
       </Center>
       <button onClick={handleLogoutClick}>Logout</button>
     </Box>
