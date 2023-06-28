@@ -27,7 +27,7 @@ import {
   subWeeks,
   subYears,
 } from "date-fns";
-import { AccessTokenContext } from "../pages/home/index";
+import { AccessTokenContext, UserContext } from "../pages/home/index";
 
 const eventLists = [
   {
@@ -108,6 +108,7 @@ export default function Calendar({
   const today = new Date();
 
   const accessToken = useContext(AccessTokenContext);
+  const currUser = useContext(UserContext);
 
   useEffect(() => {
     if (selectedDate.toLocaleDateString() !== today.toLocaleDateString()) {
@@ -290,7 +291,11 @@ export default function Calendar({
           </Tabs>
         </div>
         <Flex alignItems="center">
-          <Avatar name="Dan Abrahmov" src="https://bit.ly/dan-abramov" />
+          <Avatar
+            name={currUser && currUser.name}
+            src={currUser && currUser.avatarUrl}
+            bg="teal.500"
+          />
           <Button colorScheme="teal">Share</Button>
           <IconButton
             variant="ghost"
