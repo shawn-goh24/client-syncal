@@ -12,9 +12,15 @@ import {
   Button,
   Flex,
   IconButton,
+  Menu,
+  MenuButton,
+  MenuDivider,
+  MenuItem,
+  MenuList,
   Tab,
   TabList,
   Tabs,
+  Tooltip,
 } from "@chakra-ui/react";
 import { ArrowLeftIcon, ArrowRightIcon, SettingsIcon } from "@chakra-ui/icons";
 import {
@@ -29,6 +35,7 @@ import {
 } from "date-fns";
 import { AccessTokenContext, UserContext } from "../pages/home/index";
 import axios from "axios";
+import { useRouter } from "next/router";
 
 const eventLists = [
   {
@@ -108,6 +115,8 @@ export default function Calendar({
   const [selectedView, setSelectedView] = useState(Views.Month);
   // const calendarRef = createRef();
   const today = new Date();
+
+  const router = useRouter();
 
   const accessToken = useContext(AccessTokenContext);
   const currUser = useContext(UserContext);
@@ -191,8 +200,8 @@ export default function Calendar({
   };
 
   return (
-    <div style={{ width: "80%" }}>
-      <Flex justifyContent="space-between" alignItems="center">
+    <div style={{ width: "100%", padding: "0 20px 0 0" }}>
+      <Flex justifyContent="space-between" alignItems="center" paddingY="12px">
         <div>
           <IconButton
             variant="ghost"
@@ -308,19 +317,33 @@ export default function Calendar({
             </TabList>
           </Tabs>
         </div>
-        <Flex alignItems="center">
-          <Avatar
-            name={currUser && currUser.name}
-            src={currUser && currUser.avatarUrl}
-            bg="teal.500"
-          />
-          <Button colorScheme="teal">Share</Button>
-          <IconButton
-            variant="ghost"
-            colorScheme="teal"
-            aria-label="Previous"
-            icon={<SettingsIcon />}
-          />
+        <Flex alignItems="center" gap={3} zIndex={999}>
+          <Tooltip label={currUser && currUser.name}>
+            <Avatar
+              name={currUser && currUser.name}
+              src={currUser && currUser.avatarUrl}
+              bg="teal.500"
+            />
+          </Tooltip>
+          <Button colorScheme="teal" isDisabled>
+            Share
+          </Button>
+          <Menu>
+            <MenuButton
+              as={IconButton}
+              aria-label="Options"
+              icon={<SettingsIcon />}
+              variant="ghost"
+            />
+            <MenuList>
+              <MenuItem>Profile Setting</MenuItem>
+              <MenuItem>Calendar Setting</MenuItem>
+              <MenuDivider />
+              <MenuItem onClick={() => router.push("/api/auth/logout")}>
+                <p className="text-red-500 font-bold">Logout</p>
+              </MenuItem>
+            </MenuList>
+          </Menu>
         </Flex>
       </Flex>
       <FullCalendar
