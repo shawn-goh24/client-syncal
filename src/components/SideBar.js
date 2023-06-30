@@ -2,23 +2,17 @@ import React, { useContext, useEffect, useState } from "react";
 import syncalLogo from "../assets/syncal-logo.svg";
 import { Box, Center, Tooltip } from "@chakra-ui/react";
 import Image from "next/image";
-import { useRouter } from "next/router";
 import { AccessTokenContext, UserContext } from "@/pages/home";
 import axios from "axios";
 
 export default function Sidebar({ selectedCalendarId, setSelectedCalendarId }) {
   const [calendars, setCalendars] = useState();
-  const router = useRouter();
   const accessToken = useContext(AccessTokenContext);
   const currUser = useContext(UserContext);
 
   const handleSelectGroup = (id) => {
     console.log(id);
     setSelectedCalendarId(id);
-  };
-
-  const handleLogoutClick = () => {
-    router.push("/api/auth/logout");
   };
 
   const getGroupsApi = async (userId) => {
@@ -82,7 +76,6 @@ export default function Sidebar({ selectedCalendarId, setSelectedCalendarId }) {
             </Tooltip>
           ))}
       </Center>
-      <button onClick={handleLogoutClick}>Logout</button>
     </Box>
   );
 }
