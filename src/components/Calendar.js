@@ -28,6 +28,7 @@ import {
   subYears,
 } from "date-fns";
 import { AccessTokenContext, UserContext } from "../pages/home/index";
+import axios from "axios";
 
 const eventLists = [
   {
@@ -101,8 +102,9 @@ export default function Calendar({
   selectedMonth,
   setSelectedMonth,
   calendarRef,
+  selectedCalendarId,
 }) {
-  const [events, setEvents] = useState(eventLists);
+  const [events, setEvents] = useState([]);
   const [selectedView, setSelectedView] = useState(Views.Month);
   // const calendarRef = createRef();
   const today = new Date();
@@ -114,9 +116,25 @@ export default function Calendar({
     if (selectedDate.toLocaleDateString() !== today.toLocaleDateString()) {
       // calendarRef.current.calendar.select(new Date("22/06/23"));
       calendarRef.current.getApi().select(new Date(selectedDate));
-      console.log("inside use effect");
     }
   }, [selectedDate]);
+
+  useEffect(() => {
+    selectedCalendarId && getCalendarEventsApi(selectedCalendarId);
+  }, [selectedCalendarId]);
+
+  const getCalendarEventsApi = async (calendarId) => {
+    const res = await axios.get(
+      `http://localhost:8080/calendar/${calendarId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    console.log(res.data.Events);
+    setEvents(res.data.Events);
+  };
 
   const handleEventResize = (eventResizeInfo) => {
     const { event } = eventResizeInfo;
