@@ -66,6 +66,7 @@ export default function index() {
               setSelectedDate={setSelectedDate}
               selectedMonth={selectedMonth}
               setSelectedMonth={setSelectedMonth}
+              selectedCalendarId={selectedCalendarId}
             />
             <Calendar
               calendarRef={calendarRef}

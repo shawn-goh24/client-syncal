@@ -6,9 +6,12 @@ import {
   AccordionPanel,
   Box,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import MiniCalendar from "./ui/MiniCalendar";
 import "react-day-picker/dist/style.css";
+import axios from "axios";
+import { AccessTokenContext } from "@/pages/home";
+import EventLists from "./EventLists";
 // import Calendar from "react-calendar";
 // import "react-calendar/dist/Calendar.css";
 
@@ -18,8 +21,11 @@ export default function InfoBar({
   selectedMonth,
   setSelectedMonth,
   calendarRef,
+  selectedCalendarId,
 }) {
   // const [selectedDate, onChange] = useState(new Date());
+  const accessToken = useContext(AccessTokenContext);
+  const [events, setEvents] = useState();
 
   const testItems = (count) => {
     const content = [];
@@ -28,6 +34,24 @@ export default function InfoBar({
     }
     return content;
   };
+
+  useEffect(() => {
+    if (selectedCalendarId) {
+      const getEventListApi = async (calendarId) => {
+        const res = await axios.get(
+          `http://localhost:8080/calendar/${calendarId}/list`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        setEvents(res.data);
+      };
+
+      getEventListApi(selectedCalendarId);
+    }
+  }, [selectedCalendarId]);
 
   return (
     <div style={{ width: "300px", maxHeight: "100vh" }}>
@@ -52,7 +76,7 @@ export default function InfoBar({
           <h2>
             <AccordionButton>
               <Box as="span" flex="1" textAlign="left">
-                Events - To be completed
+                Events
               </Box>
               <AccordionIcon />
             </AccordionButton>
@@ -62,7 +86,8 @@ export default function InfoBar({
             pb={4}
             overflowY="scroll"
           >
-            {testItems(50)}
+            {/* {eventList} */}
+            <EventLists events={events} />
           </AccordionPanel>
         </AccordionItem>
         {/* <AccordionItem>
