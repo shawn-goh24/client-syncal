@@ -1,5 +1,5 @@
 import React from "react";
-import { formatHhMm } from "../../utils/utils";
+import { formatHhMm } from "../utils/utils";
 
 export default function EventLists({ events }) {
   const groupEvents =

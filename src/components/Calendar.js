@@ -36,6 +36,7 @@ import {
 import { AccessTokenContext, UserContext } from "../pages/home/index";
 import axios from "axios";
 import { useRouter } from "next/router";
+import AddEventModal from "./AddEventModal";
 
 const eventLists = [
   {
@@ -113,6 +114,8 @@ export default function Calendar({
 }) {
   const [events, setEvents] = useState([]);
   const [selectedView, setSelectedView] = useState(Views.Month);
+  const [addEventModal, setAddEventModal] = useState(false);
+
   // const calendarRef = createRef();
   const today = new Date();
 
@@ -325,8 +328,11 @@ export default function Calendar({
               bg="teal.500"
             />
           </Tooltip>
-          <Button colorScheme="teal" isDisabled>
-            Share
+          <Button
+            colorScheme="teal"
+            onClick={() => setAddEventModal((prev) => !prev)}
+          >
+            Add Event
           </Button>
           <Menu>
             <MenuButton
@@ -371,6 +377,10 @@ export default function Calendar({
         eventClick={handleEventClick}
         // eventMouseEnter={handleEventClick}
         // eventContent={renderEventContent}
+      />
+      <AddEventModal
+        addEventModal={addEventModal}
+        setAddEventModal={setAddEventModal}
       />
       <button onClick={handleTestButton}>Test</button> {/* To be deleted */}
     </div>
