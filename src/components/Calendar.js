@@ -10,6 +10,11 @@ import { useState } from "react";
 import {
   Avatar,
   Button,
+  Drawer,
+  DrawerCloseButton,
+  DrawerContent,
+  DrawerHeader,
+  DrawerOverlay,
   Flex,
   IconButton,
   Menu,
@@ -37,6 +42,7 @@ import { AccessTokenContext, UserContext } from "../pages/home/index";
 import axios from "axios";
 import { useRouter } from "next/router";
 import AddEventModal from "./AddEventModal";
+import EditEventDrawer from "./EditEventDrawer";
 
 const eventLists = [
   {
@@ -115,6 +121,8 @@ export default function Calendar({
   const [events, setEvents] = useState([]);
   const [selectedView, setSelectedView] = useState(Views.Month);
   const [addEventModal, setAddEventModal] = useState(false);
+  const [editEventDrawer, setEditEventDrawer] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState();
 
   // const calendarRef = createRef();
   const today = new Date();
@@ -148,16 +156,33 @@ export default function Calendar({
     setEvents(res.data.Events);
   };
 
+  const editEventApi = async (eventId, start, end) => {
+    // await new Promise((resolve) => setTimeout(resolve, 1000));
+    const editedEvent = await axios.put(
+      `http://localhost:8080/event/edit/${eventId}`,
+      { start: start, end: end },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    console.log(editedEvent.data);
+  };
+
   const handleEventResize = (eventResizeInfo) => {
     const { event } = eventResizeInfo;
     // change database date upon resizing
-    console.log("Event Resize: ", event.start, event.end);
+    editEventApi(event.id, event.start, event.end);
   };
 
   const handleEventDrop = (eventDropInfo) => {
     const { event } = eventDropInfo;
     // change database date upon drag and drop
     console.log("Event DnD: ", event.start, event.end);
+    console.log(event.id);
+    const end = event.allDay ? event.start : event.end;
+    editEventApi(event.id, event.start, end);
   };
 
   const handleSelectSlots = (selectSlotInfo) => {
@@ -175,12 +200,15 @@ export default function Calendar({
   };
 
   const handleEventClick = (info) => {
-    console.log(info.event.title);
-    console.log(info.event.start);
-    console.log(info.event.end);
-    console.log(info.event.backgroundColor);
-    console.log(info.event.borderColor);
-    console.log(info.event.allDay);
+    // console.log(info.event.title);
+    // console.log(info.event.start);
+    // console.log(moment(info.event.start).format("YYYY-MM-DDTHH:mm"));
+    // console.log(info.event.end);
+    // console.log(info.event.backgroundColor);
+    // console.log(info.event.borderColor);
+    // console.log(info.event.allDay);
+    setEditEventDrawer((prev) => !prev);
+    setSelectedEvent(info.event);
   };
 
   // To be deleted
@@ -381,6 +409,14 @@ export default function Calendar({
       <AddEventModal
         addEventModal={addEventModal}
         setAddEventModal={setAddEventModal}
+        selectedCalendarId={selectedCalendarId}
+        setEvents={setEvents}
+      />
+      <EditEventDrawer
+        editEventDrawer={editEventDrawer}
+        setEditEventDrawer={setEditEventDrawer}
+        selectedEvent={selectedEvent}
+        editEventApi={editEventApi}
       />
       <button onClick={handleTestButton}>Test</button> {/* To be deleted */}
     </div>
