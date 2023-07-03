@@ -32,6 +32,8 @@ export default function AddEventModal({
   const currUser = useContext(UserContext);
 
   const onAddEvent = (values, actions) => {
+    console.log("here2");
+
     addEventApi(values, actions);
     // console.log("Submitted", values);
     // actions.resetForm();
@@ -40,6 +42,7 @@ export default function AddEventModal({
 
   const addEventApi = async (newEventValues, actions) => {
     // await new Promise((resolve) => setTimeout(resolve, 1000));
+    console.log("here");
     const newlyAddedEvent = await axios.post(
       `http://localhost:8080/event/add`,
       {
@@ -72,12 +75,14 @@ export default function AddEventModal({
         <Formik
           initialValues={{
             title: "",
-            startDateTime: moment(new Date()).format("YYYY-MM-DDTHH:mm"),
-            endDateTime: moment(new Date())
-              .add(1, "hour")
-              .format("YYYY-MM-DDTHH:mm"),
-            startDate: moment(new Date()).format("YYYY-MM-DD"),
-            endDate: moment(new Date()).format("YYYY-MM-DD"),
+            // startDateTime: moment(new Date()).format("YYYY-MM-DDTHH:mm"),
+            // endDateTime: moment(new Date())
+            //   .add(1, "hour")
+            //   .format("YYYY-MM-DDTHH:mm"),
+            // startDate: moment(new Date()).format("YYYY-MM-DD"),
+            // endDate: moment(new Date()).format("YYYY-MM-DD"),
+            start: moment(new Date()).format("YYYY-MM-DDTHH:mm"),
+            end: moment(new Date()).add(1, "hour").format("YYYY-MM-DDTHH:mm"),
             color: colorOptions[0],
             description: "",
             location: "",
@@ -108,28 +113,48 @@ export default function AddEventModal({
                 />
                 <CustomFormInput
                   label="Starts"
-                  name={
-                    props.getFieldMeta().value.allDay
-                      ? "startDate"
-                      : "startDateTime"
-                  }
+                  // name={
+                  //   props.getFieldMeta().value.allDay
+                  //     ? "startDate"
+                  //     : "startDateTime"
+                  // }
+                  name="start"
                   type={
                     props.getFieldMeta().value.allDay
                       ? "date"
                       : "datetime-local"
+                  }
+                  value={
+                    props.getFieldMeta().value.allDay
+                      ? moment(props.getFieldMeta().value.start).format(
+                          "YYYY-MM-DD"
+                        )
+                      : moment(props.getFieldMeta().value.start).format(
+                          "YYYY-MM-DDTHH:mm"
+                        )
                   }
                 />
                 <CustomFormInput
                   label="Ends"
-                  name={
-                    props.getFieldMeta().value.allDay
-                      ? "endDate"
-                      : "endDateTime"
-                  }
+                  // name={
+                  //   props.getFieldMeta().value.allDay
+                  //     ? "endDate"
+                  //     : "endDateTime"
+                  // }
+                  name="end"
                   type={
                     props.getFieldMeta().value.allDay
                       ? "date"
                       : "datetime-local"
+                  }
+                  value={
+                    props.getFieldMeta().value.allDay
+                      ? moment(props.getFieldMeta().value.end).format(
+                          "YYYY-MM-DD"
+                        )
+                      : moment(props.getFieldMeta().value.end).format(
+                          "YYYY-MM-DDTHH:mm"
+                        )
                   }
                 />
                 <CustomFormTextarea

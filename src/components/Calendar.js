@@ -133,6 +133,10 @@ export default function Calendar({
   const currUser = useContext(UserContext);
 
   useEffect(() => {
+    console.log("inside event use effect");
+  }, [events]);
+
+  useEffect(() => {
     if (selectedDate.toLocaleDateString() !== today.toLocaleDateString()) {
       // calendarRef.current.calendar.select(new Date("22/06/23"));
       calendarRef.current.getApi().select(new Date(selectedDate));
@@ -156,11 +160,11 @@ export default function Calendar({
     setEvents(res.data.Events);
   };
 
-  const editEventApi = async (eventId, start, end) => {
+  const editEventApi = async (eventId, editedValues) => {
     // await new Promise((resolve) => setTimeout(resolve, 1000));
     const editedEvent = await axios.put(
       `http://localhost:8080/event/edit/${eventId}`,
-      { start: start, end: end },
+      { editedValues },
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -173,16 +177,16 @@ export default function Calendar({
   const handleEventResize = (eventResizeInfo) => {
     const { event } = eventResizeInfo;
     // change database date upon resizing
-    editEventApi(event.id, event.start, event.end);
+    editEventApi(event.id, { start: event.start, end: event.end });
   };
 
   const handleEventDrop = (eventDropInfo) => {
     const { event } = eventDropInfo;
     // change database date upon drag and drop
-    console.log("Event DnD: ", event.start, event.end);
-    console.log(event.id);
-    const end = event.allDay ? event.start : event.end;
-    editEventApi(event.id, event.start, end);
+    // console.log("Event DnD: ", event.start, event.end);
+    // console.log(event.id);
+    // const end = event.allDay && event.end ? event.start : event.end;
+    editEventApi(event.id, { start: event.start, end: event.end });
   };
 
   const handleSelectSlots = (selectSlotInfo) => {
@@ -417,6 +421,8 @@ export default function Calendar({
         setEditEventDrawer={setEditEventDrawer}
         selectedEvent={selectedEvent}
         editEventApi={editEventApi}
+        events={events}
+        setEvents={setEvents}
       />
       <button onClick={handleTestButton}>Test</button> {/* To be deleted */}
     </div>
