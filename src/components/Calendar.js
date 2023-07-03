@@ -423,6 +423,7 @@ export default function Calendar({
         editEventApi={editEventApi}
         events={events}
         setEvents={setEvents}
+        selectedCalendarId={selectedCalendarId}
       />
       <button onClick={handleTestButton}>Test</button> {/* To be deleted */}
     </div>
