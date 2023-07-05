@@ -34,7 +34,13 @@ export default function AddEventModal({
   const onAddEvent = (values, actions) => {
     console.log("here2");
 
-    addEventApi(values, actions);
+    const newValues = { ...values };
+    if (newValues.allDay) {
+      newValues.end = moment(newValues.end).add(1, "day").format("YYYY-MM-DD");
+    }
+    console.log(newValues);
+
+    addEventApi(newValues, actions);
     // console.log("Submitted", values);
     // actions.resetForm();
     // setAddEventModal((prev) => !prev);

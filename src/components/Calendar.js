@@ -204,10 +204,10 @@ export default function Calendar({
   };
 
   const handleEventClick = (info) => {
-    // console.log(info.event.title);
-    // console.log(info.event.start);
+    console.log(info.event.title);
+    console.log(info.event.start);
     // console.log(moment(info.event.start).format("YYYY-MM-DDTHH:mm"));
-    // console.log(info.event.end);
+    console.log(info.event.end);
     // console.log(info.event.backgroundColor);
     // console.log(info.event.borderColor);
     // console.log(info.event.allDay);
