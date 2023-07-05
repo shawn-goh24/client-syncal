@@ -5,9 +5,11 @@ import Image from "next/image";
 import { AccessTokenContext, UserContext } from "@/pages/home";
 import axios from "axios";
 import { AddIcon } from "@chakra-ui/icons";
+import AddCalendarModal from "./AddCalendarModal";
 
 export default function Sidebar({ selectedCalendarId, setSelectedCalendarId }) {
   const [calendars, setCalendars] = useState();
+  const [addCalendarModal, setAddCalendarModal] = useState(false);
   const accessToken = useContext(AccessTokenContext);
   const currUser = useContext(UserContext);
 
@@ -40,13 +42,17 @@ export default function Sidebar({ selectedCalendarId, setSelectedCalendarId }) {
       <Center flexDirection="column">
         {calendars &&
           calendars.map((calendar, id) => (
-            <Box width="100%" pl="15px" style={{ position: "relative" }}>
-              <Tooltip
-                key={calendar.id}
-                hasArrow
-                label={calendar.name}
-                placement="right"
-              >
+            <Box
+              width="100%"
+              pl="15px"
+              key={calendar.id}
+              style={{ position: "relative" }}
+              onClick={(e) => {
+                if (e.type === "click") console.log("left click");
+                else if (e.type === "contextmenu") console.log("right click");
+              }}
+            >
+              <Tooltip hasArrow label={calendar.name} placement="right">
                 <Box boxSize="50px" my="6px">
                   {calendar.imageUrl ? (
                     <Image
@@ -102,8 +108,14 @@ export default function Sidebar({ selectedCalendarId, setSelectedCalendarId }) {
           size="lg"
           isRound
           icon={<AddIcon />}
+          onClick={() => setAddCalendarModal((prev) => !prev)}
         />
       </Center>
+      <AddCalendarModal
+        addCalendarModal={addCalendarModal}
+        setAddCalendarModal={setAddCalendarModal}
+        setCalendars={setCalendars}
+      />
     </Box>
   );
 }

@@ -31,6 +31,7 @@
     "date-fns": "^2.30.0",
     "eslint": "8.43.0",
     "eslint-config-next": "13.4.7",
+    "firebase": "^9.23.0",
     "formik": "^2.4.2",
     "framer-motion": "^10.12.17",
     "lucide-react": "^0.252.0",
