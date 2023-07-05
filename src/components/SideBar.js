@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
 import syncalLogo from "../assets/syncal-logo.svg";
-import { Box, Center, Tooltip } from "@chakra-ui/react";
+import { Box, Center, IconButton, Tooltip } from "@chakra-ui/react";
 import Image from "next/image";
 import { AccessTokenContext, UserContext } from "@/pages/home";
 import axios from "axios";
+import { AddIcon } from "@chakra-ui/icons";
 
 export default function Sidebar({ selectedCalendarId, setSelectedCalendarId }) {
   const [calendars, setCalendars] = useState();
@@ -31,7 +32,7 @@ export default function Sidebar({ selectedCalendarId, setSelectedCalendarId }) {
   }, [currUser]);
 
   return (
-    <Box bg="blue.100" width="75px" minHeight="100vh">
+    <Box bg="blue.100" width="100px" minHeight="100vh">
       <Center py="10px">
         <Image src={syncalLogo} alt="Syncal Logo" width={50} height={50} />
       </Center>
@@ -39,42 +40,69 @@ export default function Sidebar({ selectedCalendarId, setSelectedCalendarId }) {
       <Center flexDirection="column">
         {calendars &&
           calendars.map((calendar, id) => (
-            <Tooltip
-              key={calendar.id}
-              hasArrow
-              label={calendar.name}
-              placement="right"
-            >
-              <Box boxSize="50px" my="6px">
-                {calendar.imageUrl ? (
-                  <Image
-                    className={
-                      selectedCalendarId === calendar.id
-                        ? "group-button-active"
-                        : "group-button"
-                    }
-                    width="50"
-                    height="50"
-                    src={calendar.imageUrl}
-                    alt={calendar.name}
-                    onClick={() => handleSelectGroup(calendar.id)}
-                  />
-                ) : (
-                  <Center
-                    boxSize="50px"
-                    className={
-                      selectedCalendarId === calendar.id
-                        ? "group-button-active"
-                        : "group-button"
-                    }
-                    onClick={() => handleSelectGroup(calendar.id)}
-                  >
-                    <p style={{ color: "white" }}>{calendar.name.charAt(0)}</p>
-                  </Center>
-                )}
-              </Box>
-            </Tooltip>
+            <Box width="100%" pl="15px" style={{ position: "relative" }}>
+              <Tooltip
+                key={calendar.id}
+                hasArrow
+                label={calendar.name}
+                placement="right"
+              >
+                <Box boxSize="50px" my="6px">
+                  {calendar.imageUrl ? (
+                    <Image
+                      className={
+                        selectedCalendarId === calendar.id
+                          ? "group-button-active"
+                          : "group-button"
+                      }
+                      width="50"
+                      height="50"
+                      src={calendar.imageUrl}
+                      alt={calendar.name}
+                      onClick={() => handleSelectGroup(calendar.id)}
+                    />
+                  ) : (
+                    <Center
+                      boxSize="50px"
+                      className={
+                        selectedCalendarId === calendar.id
+                          ? "group-button-active"
+                          : "group-button"
+                      }
+                      onClick={() => handleSelectGroup(calendar.id)}
+                    >
+                      <p style={{ color: "white" }}>
+                        {calendar.name.charAt(0)}
+                      </p>
+                    </Center>
+                  )}
+                </Box>
+              </Tooltip>
+              <div
+                className={
+                  selectedCalendarId === calendar.id ? "block" : "hidden"
+                }
+                style={{
+                  width: "5px",
+                  height: "50px",
+                  backgroundColor: "red",
+                  position: "absolute",
+                  borderRadius: "5px 0px 0px 5px",
+                  top: 6,
+                  right: 0,
+                }}
+              />
+            </Box>
           ))}
+      </Center>
+      <Center my="6px">
+        <IconButton
+          colorScheme="teal"
+          aria-label="New calendar"
+          size="lg"
+          isRound
+          icon={<AddIcon />}
+        />
       </Center>
     </Box>
   );
