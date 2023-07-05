@@ -16,7 +16,8 @@ export default function index() {
   const [selectedMonth, setSelectedMonth] = useState(new Date());
   const [accessToken, setAccessToken] = useState();
   const [currUser, setCurrUser] = useState();
-  const [selectedCalendarId, setSelectedCalendarId] = useState();
+  const [selectedCalendar, setSelectedCalendar] = useState();
+  const [calendars, setCalendars] = useState();
   const calendarRef = createRef();
 
   useEffect(() => {
@@ -57,8 +58,10 @@ export default function index() {
         <AccessTokenContext.Provider value={accessToken}>
           <Box display="flex">
             <Sidebar
-              selectedCalendarId={selectedCalendarId}
-              setSelectedCalendarId={setSelectedCalendarId}
+              selectedCalendar={selectedCalendar}
+              setSelectedCalendar={setSelectedCalendar}
+              calendars={calendars}
+              setCalendars={setCalendars}
             />
             <InfoBar
               calendarRef={calendarRef}
@@ -66,7 +69,7 @@ export default function index() {
               setSelectedDate={setSelectedDate}
               selectedMonth={selectedMonth}
               setSelectedMonth={setSelectedMonth}
-              selectedCalendarId={selectedCalendarId}
+              selectedCalendar={selectedCalendar}
             />
             <Calendar
               calendarRef={calendarRef}
@@ -74,7 +77,9 @@ export default function index() {
               setSelectedDate={setSelectedDate}
               selectedMonth={selectedMonth}
               setSelectedMonth={setSelectedMonth}
-              selectedCalendarId={selectedCalendarId}
+              selectedCalendar={selectedCalendar}
+              calendars={calendars}
+              setCalendars={setCalendars}
             />
           </Box>
         </AccessTokenContext.Provider>

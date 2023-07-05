@@ -21,7 +21,7 @@ export default function InfoBar({
   selectedMonth,
   setSelectedMonth,
   calendarRef,
-  selectedCalendarId,
+  selectedCalendar,
 }) {
   // const [selectedDate, onChange] = useState(new Date());
   const accessToken = useContext(AccessTokenContext);
@@ -36,7 +36,7 @@ export default function InfoBar({
   };
 
   useEffect(() => {
-    if (selectedCalendarId) {
+    if (selectedCalendar) {
       const getEventListApi = async (calendarId) => {
         const res = await axios.get(
           `http://localhost:8080/calendar/${calendarId}/list`,
@@ -49,9 +49,9 @@ export default function InfoBar({
         setEvents(res.data);
       };
 
-      getEventListApi(selectedCalendarId);
+      getEventListApi(selectedCalendar.id);
     }
-  }, [selectedCalendarId]);
+  }, [selectedCalendar]);
 
   return (
     <div style={{ width: "300px", maxHeight: "100vh" }}>

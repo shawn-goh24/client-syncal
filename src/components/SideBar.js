@@ -7,15 +7,20 @@ import axios from "axios";
 import { AddIcon } from "@chakra-ui/icons";
 import AddCalendarModal from "./AddCalendarModal";
 
-export default function Sidebar({ selectedCalendarId, setSelectedCalendarId }) {
-  const [calendars, setCalendars] = useState();
+export default function Sidebar({
+  selectedCalendar,
+  setSelectedCalendar,
+  calendars,
+  setCalendars,
+}) {
+  // const [calendars, setCalendars] = useState();
   const [addCalendarModal, setAddCalendarModal] = useState(false);
   const accessToken = useContext(AccessTokenContext);
   const currUser = useContext(UserContext);
 
-  const handleSelectGroup = (id) => {
-    console.log(id);
-    setSelectedCalendarId(id);
+  const handleSelectGroup = (cal) => {
+    console.log(cal);
+    setSelectedCalendar(cal);
   };
 
   const getGroupsApi = async (userId) => {
@@ -24,9 +29,9 @@ export default function Sidebar({ selectedCalendarId, setSelectedCalendarId }) {
         Authorization: `Bearer ${accessToken}`,
       },
     });
-    // console.log(res.data.Calendars);
+    console.log(res.data.Calendars);
     setCalendars(res.data.Calendars);
-    setSelectedCalendarId(res.data.Calendars[0].id);
+    setSelectedCalendar(res.data.Calendars[0]);
   };
 
   useEffect(() => {
@@ -47,17 +52,13 @@ export default function Sidebar({ selectedCalendarId, setSelectedCalendarId }) {
               pl="15px"
               key={calendar.id}
               style={{ position: "relative" }}
-              onClick={(e) => {
-                if (e.type === "click") console.log("left click");
-                else if (e.type === "contextmenu") console.log("right click");
-              }}
             >
               <Tooltip hasArrow label={calendar.name} placement="right">
                 <Box boxSize="50px" my="6px">
                   {calendar.imageUrl ? (
                     <Image
                       className={
-                        selectedCalendarId === calendar.id
+                        selectedCalendar.id === calendar.id
                           ? "group-button-active"
                           : "group-button"
                       }
@@ -65,17 +66,17 @@ export default function Sidebar({ selectedCalendarId, setSelectedCalendarId }) {
                       height="50"
                       src={calendar.imageUrl}
                       alt={calendar.name}
-                      onClick={() => handleSelectGroup(calendar.id)}
+                      onClick={() => handleSelectGroup(calendar)}
                     />
                   ) : (
                     <Center
                       boxSize="50px"
                       className={
-                        selectedCalendarId === calendar.id
+                        selectedCalendar.id === calendar.id
                           ? "group-button-active"
                           : "group-button"
                       }
-                      onClick={() => handleSelectGroup(calendar.id)}
+                      onClick={() => handleSelectGroup(calendar)}
                     >
                       <p style={{ color: "white" }}>
                         {calendar.name.charAt(0)}
@@ -86,7 +87,7 @@ export default function Sidebar({ selectedCalendarId, setSelectedCalendarId }) {
               </Tooltip>
               <div
                 className={
-                  selectedCalendarId === calendar.id ? "block" : "hidden"
+                  selectedCalendar.id === calendar.id ? "block" : "hidden"
                 }
                 style={{
                   width: "5px",

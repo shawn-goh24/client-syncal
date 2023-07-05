@@ -43,6 +43,7 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import AddEventModal from "./AddEventModal";
 import EditEventDrawer from "./EditEventDrawer";
+import EditCalendarModal from "./EditCalendarModal";
 
 const eventLists = [
   {
@@ -116,13 +117,16 @@ export default function Calendar({
   selectedMonth,
   setSelectedMonth,
   calendarRef,
-  selectedCalendarId,
+  selectedCalendar,
+  calendars,
+  setCalendars,
 }) {
   const [events, setEvents] = useState([]);
   const [selectedView, setSelectedView] = useState(Views.Month);
   const [addEventModal, setAddEventModal] = useState(false);
   const [editEventDrawer, setEditEventDrawer] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState();
+  const [editCalendarModal, setEditCalendarModal] = useState(false);
 
   // const calendarRef = createRef();
   const today = new Date();
@@ -144,8 +148,8 @@ export default function Calendar({
   }, [selectedDate]);
 
   useEffect(() => {
-    selectedCalendarId && getCalendarEventsApi(selectedCalendarId);
-  }, [selectedCalendarId]);
+    selectedCalendar && getCalendarEventsApi(selectedCalendar.id);
+  }, [selectedCalendar]);
 
   const getCalendarEventsApi = async (calendarId) => {
     const res = await axios.get(
@@ -375,7 +379,9 @@ export default function Calendar({
             />
             <MenuList>
               <MenuItem>Profile Setting</MenuItem>
-              <MenuItem>Calendar Setting</MenuItem>
+              <MenuItem onClick={() => setEditCalendarModal((prev) => !prev)}>
+                Calendar Setting
+              </MenuItem>
               <MenuDivider />
               <MenuItem onClick={() => router.push("/api/auth/logout")}>
                 <p className="text-red-500 font-bold">Logout</p>
@@ -413,7 +419,7 @@ export default function Calendar({
       <AddEventModal
         addEventModal={addEventModal}
         setAddEventModal={setAddEventModal}
-        selectedCalendarId={selectedCalendarId}
+        selectedCalendarId={selectedCalendar?.id}
         setEvents={setEvents}
       />
       <EditEventDrawer
@@ -423,7 +429,13 @@ export default function Calendar({
         editEventApi={editEventApi}
         events={events}
         setEvents={setEvents}
-        selectedCalendarId={selectedCalendarId}
+        selectedCalendarId={selectedCalendar?.id}
+      />
+      <EditCalendarModal
+        editCalendarModal={editCalendarModal}
+        setEditCalendarModal={setEditCalendarModal}
+        selectedCalendar={selectedCalendar}
+        setCalendars={setCalendars}
       />
       <button onClick={handleTestButton}>Test</button> {/* To be deleted */}
     </div>

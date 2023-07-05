@@ -52,9 +52,7 @@ export default function AddCalendarModal({
   const handleCalendarImageStorage = (values) => {
     const storageRef = sRef(
       storage,
-      `users/${currUser.name}/calendarImage/${values.name}${Math.floor(
-        Math.random() * 100000
-      )}`
+      `users/${currUser.name}/calendarImage/${values.name}`
     );
     return new Promise((resolve, reject) => {
       if (calendarImagePreview !== "") {
