@@ -44,65 +44,7 @@ import { useRouter } from "next/router";
 import AddEventModal from "./AddEventModal";
 import EditEventDrawer from "./EditEventDrawer";
 import EditCalendarModal from "./EditCalendarModal";
-
-const eventLists = [
-  {
-    title: "Meeting 1",
-    start: moment("2023-06-11T12:00:00").toDate(),
-    end: moment("2023-06-11T13:00:00").toDate(),
-    backgroundColor: "#77DD77",
-    borderColor: "#77DD77",
-    allDay: false,
-  },
-  {
-    title: "Meeting 3",
-    start: moment("2023-06-11T13:00:00").toDate(),
-    end: moment("2023-06-11T14:00:00").toDate(),
-    backgroundColor: "#77DD77",
-    borderColor: "#77DD77",
-    allDay: false,
-  },
-  {
-    title: "Meeting 4",
-    start: moment("2023-06-11T14:00:00").toDate(),
-    end: moment("2023-06-11T15:00:00").toDate(),
-    backgroundColor: "#77DD77",
-    borderColor: "#77DD77",
-    allDay: false,
-  },
-  {
-    title: "Meeting 5",
-    start: moment("2023-06-11T15:00:00").toDate(),
-    end: moment("2023-06-11T16:00:00").toDate(),
-    backgroundColor: "#77DD77",
-    borderColor: "#77DD77",
-    allDay: false,
-  },
-  {
-    title: "Meeting 6",
-    start: moment("2023-06-11T16:00:00").toDate(),
-    end: moment("2023-06-11T17:00:00").toDate(),
-    backgroundColor: "#77DD77",
-    borderColor: "#77DD77",
-    allDay: false,
-  },
-  {
-    title: "Meeting 7",
-    start: moment("2023-06-11T17:00:00").toDate(),
-    end: moment("2023-06-11T18:00:00").toDate(),
-    backgroundColor: "#77DD77",
-    borderColor: "#77DD77",
-    allDay: false,
-  },
-  {
-    title: "Meeting 2",
-    start: moment("2023-06-12T12:00:00").toDate(),
-    end: undefined,
-    backgroundColor: "#DD77DD",
-    borderColor: "#DD77DD",
-    allDay: true,
-  },
-];
+import InviteMembersModal from "./InviteMembersModal";
 
 const Views = {
   Day: "day",
@@ -127,6 +69,7 @@ export default function Calendar({
   const [editEventDrawer, setEditEventDrawer] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState();
   const [editCalendarModal, setEditCalendarModal] = useState(false);
+  const [inviteMembersModal, setInviteMembersModal] = useState(false);
 
   // const calendarRef = createRef();
   const today = new Date();
@@ -226,16 +169,16 @@ export default function Calendar({
     // setSelectedDate(
     //   new Date(calendarRef.current.calendar.currentData.viewTitle)
     // );
-    async function getUser() {
-      const res = await fetch("http://localhost:8080/user", {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      const users = await res.json();
-      console.log(users);
-    }
-    getUser();
+    // async function getUser() {
+    //   const res = await fetch("http://localhost:8080/user", {
+    //     headers: {
+    //       Authorization: `Bearer ${accessToken}`,
+    //     },
+    //   });
+    //   const users = await res.json();
+    //   console.log(users);
+    // }
+    // getUser();
   };
 
   return (
@@ -382,6 +325,9 @@ export default function Calendar({
               <MenuItem onClick={() => setEditCalendarModal((prev) => !prev)}>
                 Calendar Setting
               </MenuItem>
+              <MenuItem onClick={() => setInviteMembersModal((prev) => !prev)}>
+                Invite Members
+              </MenuItem>
               <MenuDivider />
               <MenuItem onClick={() => router.push("/api/auth/logout")}>
                 <p className="text-red-500 font-bold">Logout</p>
@@ -436,6 +382,11 @@ export default function Calendar({
         setEditCalendarModal={setEditCalendarModal}
         selectedCalendar={selectedCalendar}
         setCalendars={setCalendars}
+      />
+      <InviteMembersModal
+        inviteMembersModal={inviteMembersModal}
+        setInviteMembersModal={setInviteMembersModal}
+        selectedCalendar={selectedCalendar}
       />
       <button onClick={handleTestButton}>Test</button> {/* To be deleted */}
     </div>

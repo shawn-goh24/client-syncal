@@ -166,7 +166,7 @@ export default function EditCalendarModal({
                           : false
                       }
                     >
-                      Rename
+                      Confirm
                     </Button>
                   </Box>
 
