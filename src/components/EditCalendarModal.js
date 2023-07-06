@@ -41,12 +41,18 @@ export default function EditCalendarModal({
   const [alertDialog, setAlertDialog] = useState(false);
   const [deleteInput, setDeleteInput] = useState("");
   const [isDeleteInvalid, setIsDeleteInvalid] = useState(false);
+  const [leaveAlertDialog, setLeaveAlertDialog] = useState(false);
+  const [isMember, setIsMember] = useState(false);
   const accessToken = useContext(AccessTokenContext);
   const currUser = useContext(UserContext);
   const cancelRef = useRef();
+  const leaveCancelRef = useRef();
 
   useEffect(() => {
-    selectedCalendar && setCalendarImageUrl(selectedCalendar.imageUrl);
+    if (selectedCalendar) {
+      setCalendarImageUrl(selectedCalendar.imageUrl);
+      isUserMember();
+    }
   }, [selectedCalendar]);
 
   const handleEditCalendar = async (values, actions) => {
@@ -97,6 +103,16 @@ export default function EditCalendarModal({
     });
   };
 
+  const isUserMember = async () => {
+    const res = await axios.get(
+      `http://localhost:8080/calendar/usercalendar/${currUser.id}/${selectedCalendar.id}`
+    );
+    // console.log(res.data.Users[0].UserCalendar.roleId);
+    res.data && res.data.Users[0].UserCalendar.roleId === 2
+      ? setIsMember(true)
+      : setIsMember(false);
+  };
+
   const handleDeleteCalendar = async () => {
     if (deleteInput === selectedCalendar.name) {
       const response = await axios.delete(
@@ -115,6 +131,23 @@ export default function EditCalendarModal({
       setIsDeleteInvalid(true);
       setDeleteInput("");
     }
+  };
+
+  const handleLeaveCalendar = () => {
+    const leaveCalendarApi = async () => {
+      const response = await axios.delete(
+        `http://localhost:8080/calendar/leave/${selectedCalendar.id}/${currUser.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      setCalendars(response.data.Calendars);
+      setEditCalendarModal(false);
+    };
+    leaveCalendarApi();
+    setLeaveAlertDialog(false);
   };
 
   return (
@@ -176,23 +209,31 @@ export default function EditCalendarModal({
             )}
           </Formik>
           <ModalFooter>
-            {/* <Box>
-            <FormLabel>
-              To confirm, type "{selectedCalendar.name}" in the box below
-            </FormLabel>
-            <Input type="text" />
-          </Box> */}
-            <Button
-              colorScheme="red"
-              variant="outline"
-              minWidth="100%"
-              onClick={() => {
-                setEditCalendarModal((prev) => !prev);
-                setAlertDialog((prev) => !prev);
-              }}
-            >
-              Delete Calendar
-            </Button>
+            {isMember ? (
+              <Button
+                colorScheme="red"
+                variant="outline"
+                minWidth="100%"
+                onClick={() => {
+                  setEditCalendarModal((prev) => !prev);
+                  setLeaveAlertDialog(true);
+                }}
+              >
+                Leave Calendar
+              </Button>
+            ) : (
+              <Button
+                colorScheme="red"
+                variant="outline"
+                minWidth="100%"
+                onClick={() => {
+                  setEditCalendarModal((prev) => !prev);
+                  setAlertDialog((prev) => !prev);
+                }}
+              >
+                Delete Calendar
+              </Button>
+            )}
           </ModalFooter>
         </ModalContent>
       </Modal>
@@ -236,6 +277,35 @@ export default function EditCalendarModal({
               </Button>
               <Button colorScheme="red" onClick={handleDeleteCalendar} ml={3}>
                 Delete
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
+      <AlertDialog
+        isOpen={leaveAlertDialog}
+        leastDestructiveRef={leaveCancelRef}
+        onClose={() => {
+          setLeaveAlertDialog((prev) => !prev);
+        }}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              Delete {selectedCalendar?.name}
+            </AlertDialogHeader>
+            <AlertDialogBody>Are you sure you want to leave?</AlertDialogBody>
+            <AlertDialogFooter>
+              <Button
+                ref={leaveCancelRef}
+                onClick={() => {
+                  setLeaveAlertDialog((prev) => !prev);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button colorScheme="red" onClick={handleLeaveCalendar} ml={3}>
+                Confirm
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>
