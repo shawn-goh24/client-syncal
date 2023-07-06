@@ -31,12 +31,16 @@ export default function InviteMembersModal({
 
   const handleAddEmail = (e) => {
     e.preventDefault();
-    setInvitedEmails((prev) => [...prev, email]);
+    setInvitedEmails((prev) => [
+      ...prev,
+      { calendarId: selectedCalendar.id, email: email },
+    ]);
     setEmail("");
   };
 
   const handleInvites = () => {
     sendInviteApi();
+    addToPendingApi();
   };
 
   const handleClose = () => {
@@ -53,6 +57,21 @@ export default function InviteMembersModal({
         members: invitedEmails,
         calendar: selectedCalendar,
         inviteUrl: `http://localhost:3000/invites/${selectedCalendar.id}`,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    console.log(res.data);
+  };
+
+  const addToPendingApi = async () => {
+    const res = await axios.post(
+      `http://localhost:8080/pending/add`,
+      {
+        invitees: invitedEmails,
       },
       {
         headers: {
@@ -85,12 +104,12 @@ export default function InviteMembersModal({
             {invitedEmails?.map((item) => (
               <Tag
                 size="md"
-                key={item}
+                key={item.email}
                 borderRadius="full"
                 variant="solid"
                 colorScheme="green"
               >
-                <TagLabel>{item}</TagLabel>
+                <TagLabel>{item.email}</TagLabel>
                 <TagCloseButton />
               </Tag>
             ))}
