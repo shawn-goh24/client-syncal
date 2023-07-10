@@ -8,7 +8,9 @@ export default handleAuth({
         audience: "https://syncal/api", // or AUTH0_AUDIENCE
         // Add the `offline_access` scope to also get a Refresh Token
         scope:
-          "openid profile email read:current_user update:current_user_metadata", // or AUTH0_SCOPE
+          "openid profile email read:current_user read:user_idp_tokens update:current_user_metadata", // or AUTH0_SCOPE
+        // connection: "google-oauth2",
+        // connection_scope: "https://www.googleapis.com/auth/calendar",
       },
     });
   },

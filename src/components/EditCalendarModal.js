@@ -9,6 +9,8 @@ import {
   Box,
   Button,
   Center,
+  Checkbox,
+  Flex,
   FormLabel,
   Input,
   Modal,
@@ -18,7 +20,10 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  StackDivider,
+  Switch,
   Text,
+  VStack,
 } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
 import React, { useContext, useEffect, useRef, useState } from "react";
@@ -29,12 +34,19 @@ import { storage } from "../../firebase";
 import axios from "axios";
 import { calendarFormSchema } from "@/formSchema/calendarFormSchema";
 import { AccessTokenContext, UserContext } from "@/pages/home";
+import {
+  getAccessToken,
+  getSession,
+  withPageAuthRequired,
+} from "@auth0/nextjs-auth0";
+import { useUser } from "@auth0/nextjs-auth0/client";
 
 export default function EditCalendarModal({
   editCalendarModal,
   setEditCalendarModal,
   selectedCalendar,
   setCalendars,
+  googleCalList,
 }) {
   const [calendarImagePreview, setCalendarImagePreview] = useState();
   const [calendarImageUrl, setCalendarImageUrl] = useState();
@@ -105,7 +117,12 @@ export default function EditCalendarModal({
 
   const isUserMember = async () => {
     const res = await axios.get(
-      `http://localhost:8080/calendar/usercalendar/${currUser.id}/${selectedCalendar.id}`
+      `http://localhost:8080/calendar/usercalendar/${currUser.id}/${selectedCalendar.id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
     );
     // console.log(res.data.Users[0].UserCalendar.roleId);
     res.data && res.data.Users[0].UserCalendar.roleId === 2
@@ -150,6 +167,8 @@ export default function EditCalendarModal({
     setLeaveAlertDialog(false);
   };
 
+  console.log("Google Cal List: ", googleCalList);
+
   return (
     <>
       <Modal
@@ -158,7 +177,7 @@ export default function EditCalendarModal({
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Edit calendar</ModalHeader>
+          <ModalHeader>Calendar Settings</ModalHeader>
           <ModalCloseButton />
           <Center>
             <Box as="label" style={{ position: "relative" }}>
@@ -177,14 +196,14 @@ export default function EditCalendarModal({
               </Box>
             </Box>
           </Center>
-          <Formik
-            initialValues={{ name: selectedCalendar?.name }}
-            validationSchema={calendarFormSchema}
-            onSubmit={handleEditCalendar}
-          >
-            {(props) => (
-              <Form>
-                <ModalBody>
+          <ModalBody>
+            <Formik
+              initialValues={{ name: selectedCalendar?.name }}
+              validationSchema={calendarFormSchema}
+              onSubmit={handleEditCalendar}
+            >
+              {(props) => (
+                <Form>
                   <FormLabel>Calendar Name</FormLabel>
                   <Box display="flex">
                     <CustomFormInput name="name" type="text" />
@@ -199,41 +218,64 @@ export default function EditCalendarModal({
                           : false
                       }
                     >
-                      Confirm
+                      Rename
                     </Button>
                   </Box>
-
                   <br />
-                </ModalBody>
-              </Form>
-            )}
-          </Formik>
+                </Form>
+              )}
+            </Formik>
+            <FormLabel>Calendars</FormLabel>
+            <Text>Google</Text>
+            <VStack
+              divider={<StackDivider borderColor="gray.200" />}
+              style={{
+                border: "1px solid gray",
+                padding: "10px",
+                borderRadius: "10px",
+              }}
+              align="stretch"
+            >
+              {googleCalList &&
+                googleCalList.map((cal) => (
+                  <Checkbox key={cal.id} id={cal.id}>
+                    {cal.summary}
+                    {/* | {cal.id} */}
+                  </Checkbox>
+                ))}
+            </VStack>
+          </ModalBody>
           <ModalFooter>
-            {isMember ? (
-              <Button
-                colorScheme="red"
-                variant="outline"
-                minWidth="100%"
-                onClick={() => {
-                  setEditCalendarModal((prev) => !prev);
-                  setLeaveAlertDialog(true);
-                }}
-              >
-                Leave Calendar
+            <Box minWidth="100%">
+              <Button colorScheme="teal" minWidth="100%" mb={2}>
+                Done
               </Button>
-            ) : (
-              <Button
-                colorScheme="red"
-                variant="outline"
-                minWidth="100%"
-                onClick={() => {
-                  setEditCalendarModal((prev) => !prev);
-                  setAlertDialog((prev) => !prev);
-                }}
-              >
-                Delete Calendar
-              </Button>
-            )}
+              {isMember ? (
+                <Button
+                  colorScheme="red"
+                  variant="outline"
+                  minWidth="100%"
+                  onClick={() => {
+                    setEditCalendarModal((prev) => !prev);
+                    setLeaveAlertDialog(true);
+                  }}
+                >
+                  Leave Calendar
+                </Button>
+              ) : (
+                <Button
+                  colorScheme="red"
+                  variant="outline"
+                  minWidth="100%"
+                  onClick={() => {
+                    setEditCalendarModal((prev) => !prev);
+                    setAlertDialog((prev) => !prev);
+                  }}
+                >
+                  Delete Calendar
+                </Button>
+              )}
+            </Box>
           </ModalFooter>
         </ModalContent>
       </Modal>

@@ -5,6 +5,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogOverlay,
+  Box,
   Button,
   Drawer,
   DrawerBody,
@@ -16,7 +17,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
-import React, { useContext, useRef } from "react";
+import React, { useContext, useRef, useState } from "react";
 import CustomFormInput from "./ui/CustomFormInput";
 import CustomFormCheckbox from "./ui/CustomFormCheckbox";
 import CustomSelect from "./ui/CustomSelect";
@@ -26,7 +27,7 @@ import { eventFormSchema } from "@/formSchema/formSchema";
 import { colorOptions } from "@/contants";
 import axios from "axios";
 import { AccessTokenContext } from "@/pages/home";
-import { DeleteIcon } from "@chakra-ui/icons";
+import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 
 export default function EditEventDrawer({
   editEventDrawer,
@@ -39,6 +40,7 @@ export default function EditEventDrawer({
   const accessToken = useContext(AccessTokenContext);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef();
+  const [isEdit, setIsEdit] = useState(true);
 
   const handleEditEvent = (values, actions) => {
     console.log("Edited");
@@ -99,7 +101,7 @@ export default function EditEventDrawer({
         <DrawerContent>
           <DrawerCloseButton />
           <DrawerHeader>
-            Edit event{" "}
+            {selectedEvent?.title}
             <span>
               <IconButton
                 variant="ghost"
@@ -109,125 +111,146 @@ export default function EditEventDrawer({
                 onClick={onOpen}
               />
             </span>
+            <span>
+              <IconButton
+                variant="ghost"
+                size="sm"
+                aria-label="Edit event"
+                icon={<EditIcon />}
+                // onClick={onOpen}
+              />
+            </span>
           </DrawerHeader>
-          <Formik
-            initialValues={{
-              title: selectedEvent?.title,
-              start: moment(selectedEvent?.start).format("YYYY-MM-DDTHH:mm"),
-              end: selectedEvent?.end
-                ? moment(selectedEvent?.end)
-                    .add(1, "hour")
-                    .format("YYYY-MM-DDTHH:mm")
-                : null,
-              // startDateTime: moment(selectedEvent.start).format(
-              //   "YYYY-MM-DDTHH:mm"
-              // ),
-              // endDateTime: moment(selectedEvent.end).format("YYYY-MM-DDTHH:mm"),
-              // startDate: moment(selectedEvent.start).format("YYYY-MM-DD"),
-              // endDate: moment(selectedEvent.end).format("YYYY-MM-DD"),
-              color: colorOptions[0], // need utils function to get the color
-              description: selectedEvent?.description,
-              location: selectedEvent?.location,
-              allDay: selectedEvent?.allDay,
-            }}
-            validationSchema={eventFormSchema}
-            onSubmit={handleEditEvent}
-          >
-            {(props) => (
-              <Form>
-                <DrawerBody pb={6}>
-                  <CustomFormInput
-                    label="Title*"
-                    name="title"
-                    type="text"
-                    placeholder="Enter event title"
-                  />
-                  <CustomFormCheckbox name="allDay" />
-                  <CustomSelect
-                    label="Color"
-                    name="color"
-                    options={colorOptions}
-                    onChange={(value) =>
-                      props.setFieldValue("color", value.value)
-                    }
-                    value={props.values.color}
-                    defaultValue={() => {
-                      const index = colorOptions.findIndex(
-                        (color) => color.value == selectedEvent?.backgroundColor
-                      );
-                      return colorOptions[index];
-                    }}
-                  />
-                  <CustomFormInput
-                    label="Starts"
-                    // name={
-                    //   props.getFieldMeta().value.allDay
-                    //     ? "startDate"
-                    //     : "startDateTime"
-                    // }
-                    name="start"
-                    type={
-                      props.getFieldMeta().value.allDay
-                        ? "date"
-                        : "datetime-local"
-                    }
-                    value={
-                      props.getFieldMeta().value.allDay
-                        ? moment(props.getFieldMeta().value.start).format(
-                            "YYYY-MM-DD"
-                          )
-                        : moment(props.getFieldMeta().value.start).format(
-                            "YYYY-MM-DDTHH:mm"
-                          )
-                    }
-                  />
-                  <CustomFormInput
-                    label="Ends"
-                    // name={
-                    //   props.getFieldMeta().value.allDay
-                    //     ? "endDate"
-                    //     : "endDateTime"
-                    // }
-                    name="end"
-                    type={
-                      props.getFieldMeta().value.allDay
-                        ? "date"
-                        : "datetime-local"
-                    }
-                    value={
-                      props.getFieldMeta().value.allDay
-                        ? moment(props.getFieldMeta().value.end)
-                            .subtract(1, "day")
-                            .format("YYYY-MM-DD")
-                        : moment(props.getFieldMeta().value.end).format(
-                            "YYYY-MM-DDTHH:mm"
-                          )
-                    }
-                  />
-                  <CustomFormTextarea
-                    label="Description"
-                    name="description"
-                    placeholder="(Optional)"
-                  />
-                  <CustomFormInput
-                    label="Location"
-                    name="location"
-                    type="text"
-                    placeholder="(Optional)"
-                  />
-                  <Button
-                    variant="ghost"
-                    onClick={() => setEditEventDrawer((prev) => !prev)}
-                  >
-                    Delete
-                  </Button>
-                  <Button colorScheme="teal" type="submit">
-                    Confirm
-                  </Button>
-                </DrawerBody>
-              </Form>
-            )}
-          </Formik>
+          {isEdit ? (
+            <Formik
+              initialValues={{
+                title: selectedEvent?.title,
+                start: moment(selectedEvent?.start).format("YYYY-MM-DDTHH:mm"),
+                end: selectedEvent?.end
+                  ? moment(selectedEvent?.end)
+                      .add(1, "hour")
+                      .format("YYYY-MM-DDTHH:mm")
+                  : null,
+                // startDateTime: moment(selectedEvent.start).format(
+                //   "YYYY-MM-DDTHH:mm"
+                // ),
+                // endDateTime: moment(selectedEvent.end).format("YYYY-MM-DDTHH:mm"),
+                // startDate: moment(selectedEvent.start).format("YYYY-MM-DD"),
+                // endDate: moment(selectedEvent.end).format("YYYY-MM-DD"),
+                color: colorOptions[0], // need utils function to get the color
+                description: selectedEvent?.description,
+                location: selectedEvent?.location,
+                allDay: selectedEvent?.allDay,
+              }}
+              validationSchema={eventFormSchema}
+              onSubmit={handleEditEvent}
+            >
+              {(props) => (
+                <Form>
+                  <DrawerBody pb={6}>
+                    <CustomFormInput
+                      label="Title*"
+                      name="title"
+                      type="text"
+                      placeholder="Enter event title"
+                    />
+                    <CustomFormCheckbox name="allDay" />
+                    <CustomSelect
+                      label="Color"
+                      name="color"
+                      options={colorOptions}
+                      onChange={(value) =>
+                        props.setFieldValue("color", value.value)
+                      }
+                      value={props.values.color}
+                      defaultValue={() => {
+                        const index = colorOptions.findIndex(
+                          (color) =>
+                            color.value == selectedEvent?.backgroundColor
+                        );
+                        return colorOptions[index];
+                      }}
+                    />
+                    <CustomFormInput
+                      label="Starts"
+                      // name={
+                      //   props.getFieldMeta().value.allDay
+                      //     ? "startDate"
+                      //     : "startDateTime"
+                      // }
+                      name="start"
+                      type={
+                        props.getFieldMeta().value.allDay
+                          ? "date"
+                          : "datetime-local"
+                      }
+                      value={
+                        props.getFieldMeta().value.allDay
+                          ? moment(props.getFieldMeta().value.start).format(
+                              "YYYY-MM-DD"
+                            )
+                          : moment(props.getFieldMeta().value.start).format(
+                              "YYYY-MM-DDTHH:mm"
+                            )
+                      }
+                    />
+                    <CustomFormInput
+                      label="Ends"
+                      // name={
+                      //   props.getFieldMeta().value.allDay
+                      //     ? "endDate"
+                      //     : "endDateTime"
+                      // }
+                      name="end"
+                      type={
+                        props.getFieldMeta().value.allDay
+                          ? "date"
+                          : "datetime-local"
+                      }
+                      value={
+                        props.getFieldMeta().value.allDay
+                          ? moment(props.getFieldMeta().value.end)
+                              .subtract(1, "day")
+                              .format("YYYY-MM-DD")
+                          : moment(props.getFieldMeta().value.end).format(
+                              "YYYY-MM-DDTHH:mm"
+                            )
+                      }
+                    />
+                    <CustomFormTextarea
+                      label="Description"
+                      name="description"
+                      placeholder="(Optional)"
+                    />
+                    <CustomFormInput
+                      label="Location"
+                      name="location"
+                      type="text"
+                      placeholder="(Optional)"
+                    />
+                    <Button
+                      variant="ghost"
+                      onClick={() => setEditEventDrawer((prev) => !prev)}
+                    >
+                      Delete
+                    </Button>
+                    <Button colorScheme="teal" type="submit">
+                      Confirm
+                    </Button>
+                  </DrawerBody>
+                </Form>
+              )}
+            </Formik>
+          ) : (
+            <Box>
+              <Box>Title</Box>
+              <Box>Color</Box>
+              <Box>Start</Box>
+              <Box>End</Box>
+              <Box>Description</Box>
+              <Box>Location</Box>
+            </Box>
+          )}
         </DrawerContent>
       </Drawer>
       <AlertDialog

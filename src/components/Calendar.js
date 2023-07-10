@@ -62,6 +62,8 @@ export default function Calendar({
   selectedCalendar,
   calendars,
   setCalendars,
+  event,
+  googleCalList,
 }) {
   const [events, setEvents] = useState([]);
   const [selectedView, setSelectedView] = useState(Views.Month);
@@ -169,16 +171,33 @@ export default function Calendar({
     // setSelectedDate(
     //   new Date(calendarRef.current.calendar.currentData.viewTitle)
     // );
-    // async function getUser() {
-    //   const res = await fetch("http://localhost:8080/user", {
-    //     headers: {
-    //       Authorization: `Bearer ${accessToken}`,
-    //     },
-    //   });
-    //   const users = await res.json();
-    //   console.log(users);
+
+    async function getUser() {
+      const res = await fetch("http://localhost:8080/user", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      const users = await res.json();
+      console.log(users);
+    }
+    getUser();
+
+    // async function getIdentities() {
+    //   const managementApi = await axios.post(
+    //     `https://dev-e27oql725amd8bwx.us.auth0.com/oauth/token`,
+    //     {
+    //       client_id: "acN7AlkNLgWo1wnnCpxh6NcTRR3TcYhT",
+    //       client_secret:
+    //         "ZLzvL-WtV0-pzS_5gt_pdOMLgjp845NMyyTUgR5HOAUSzoEnyw9tL08BgxJLRJOA",
+    //       audience: "https://dev-e27oql725amd8bwx.us.auth0.com/api/v2/",
+    //       grant_type: "client_credentials",
+    //     }
+    //   );
+
+    //   console.log(managementApi);
     // }
-    // getUser();
+    // getIdentities();
   };
 
   return (
@@ -382,6 +401,7 @@ export default function Calendar({
         setEditCalendarModal={setEditCalendarModal}
         selectedCalendar={selectedCalendar}
         setCalendars={setCalendars}
+        googleCalList={googleCalList}
       />
       <InviteMembersModal
         inviteMembersModal={inviteMembersModal}
