@@ -62,7 +62,6 @@ export default function Calendar({
   selectedCalendar,
   calendars,
   setCalendars,
-  event,
   googleCalList,
 }) {
   const [events, setEvents] = useState([]);
@@ -82,7 +81,7 @@ export default function Calendar({
   const currUser = useContext(UserContext);
 
   useEffect(() => {
-    console.log("inside event use effect");
+    // console.log("inside event use effect");
   }, [events]);
 
   useEffect(() => {
@@ -105,7 +104,7 @@ export default function Calendar({
         },
       }
     );
-    console.log(res.data.Events);
+    // console.log(res.data.Events);
     setEvents(res.data.Events);
   };
 
@@ -120,7 +119,7 @@ export default function Calendar({
         },
       }
     );
-    console.log(editedEvent.data);
+    // console.log(editedEvent.data);
   };
 
   const handleEventResize = (eventResizeInfo) => {
@@ -153,10 +152,10 @@ export default function Calendar({
   };
 
   const handleEventClick = (info) => {
-    console.log(info.event.title);
-    console.log(info.event.start);
+    // console.log(info.event.title);
+    // console.log(info.event.start);
     // console.log(moment(info.event.start).format("YYYY-MM-DDTHH:mm"));
-    console.log(info.event.end);
+    // console.log(info.event.end);
     // console.log(info.event.backgroundColor);
     // console.log(info.event.borderColor);
     // console.log(info.event.allDay);
@@ -179,7 +178,7 @@ export default function Calendar({
         },
       });
       const users = await res.json();
-      console.log(users);
+      // console.log(users);
     }
     getUser();
 
@@ -402,6 +401,8 @@ export default function Calendar({
         selectedCalendar={selectedCalendar}
         setCalendars={setCalendars}
         googleCalList={googleCalList}
+        setEvents={setEvents}
+        events={events}
       />
       <InviteMembersModal
         inviteMembersModal={inviteMembersModal}

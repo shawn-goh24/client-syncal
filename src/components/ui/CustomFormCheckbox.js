@@ -2,7 +2,7 @@ import { Checkbox, Flex, FormLabel } from "@chakra-ui/react";
 import { useField } from "formik";
 import React from "react";
 
-export default function CustomFormCheckbox({ label, ...props }) {
+export default function CustomFormCheckbox({ label, text, ...props }) {
   const [field, meta] = useField(props);
   return (
     <>
@@ -13,7 +13,7 @@ export default function CustomFormCheckbox({ label, ...props }) {
           {...props}
           className={meta.touched && meta.error ? "text-red-300" : ""}
         />
-        <span>All day</span>
+        <span>{text}</span>
       </Flex>
       {meta.touched && meta.error && <div>{meta.error}</div>}
     </>

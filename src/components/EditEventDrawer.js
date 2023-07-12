@@ -43,8 +43,8 @@ export default function EditEventDrawer({
   const [isEdit, setIsEdit] = useState(true);
 
   const handleEditEvent = (values, actions) => {
-    console.log("Edited");
-    console.log(values);
+    // console.log("Edited");
+    // console.log(values);
     const newValues = { ...values };
     if (newValues.allDay) {
       newValues.end = moment(newValues.end).add(1, "day").format("YYYY-MM-DD");
@@ -71,7 +71,7 @@ export default function EditEventDrawer({
     let eventList = events;
     const eventToReplace = eventList.findIndex((event) => event.id == eventId);
     eventList[eventToReplace] = editedEvent.data;
-    console.log(eventList);
+    // console.log(eventList);
     setEvents(eventList);
   };
 
@@ -85,7 +85,7 @@ export default function EditEventDrawer({
       }
     );
 
-    console.log(newEvents.data);
+    // console.log(newEvents.data);
     setEvents(newEvents.data.Events);
   };
 
@@ -128,7 +128,7 @@ export default function EditEventDrawer({
                 start: moment(selectedEvent?.start).format("YYYY-MM-DDTHH:mm"),
                 end: selectedEvent?.end
                   ? moment(selectedEvent?.end)
-                      .add(1, "hour")
+                      .add(1, "hour") // check this
                       .format("YYYY-MM-DDTHH:mm")
                   : null,
                 // startDateTime: moment(selectedEvent.start).format(
@@ -154,7 +154,7 @@ export default function EditEventDrawer({
                       type="text"
                       placeholder="Enter event title"
                     />
-                    <CustomFormCheckbox name="allDay" />
+                    <CustomFormCheckbox name="allDay" text="All Day" />
                     <CustomSelect
                       label="Color"
                       name="color"

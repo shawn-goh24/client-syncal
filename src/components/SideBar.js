@@ -29,7 +29,7 @@ export default function Sidebar({
         Authorization: `Bearer ${accessToken}`,
       },
     });
-    console.log(res.data.Calendars);
+    // console.log(res.data.Calendars);
     setCalendars(res.data.Calendars);
     setSelectedCalendar(res.data.Calendars[0]);
   };

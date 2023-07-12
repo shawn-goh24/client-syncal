@@ -40,6 +40,7 @@ import {
   withPageAuthRequired,
 } from "@auth0/nextjs-auth0";
 import { useUser } from "@auth0/nextjs-auth0/client";
+import ImportCalendar from "./ImportCalendar";
 
 export default function EditCalendarModal({
   editCalendarModal,
@@ -47,6 +48,8 @@ export default function EditCalendarModal({
   selectedCalendar,
   setCalendars,
   googleCalList,
+  setEvents,
+  events,
 }) {
   const [calendarImagePreview, setCalendarImagePreview] = useState();
   const [calendarImageUrl, setCalendarImageUrl] = useState();
@@ -88,7 +91,7 @@ export default function EditCalendarModal({
       }
     );
 
-    console.log(response.data.Calendars);
+    // console.log(response.data.Calendars);
     setCalendars(response.data.Calendars);
     setEditCalendarModal((prev) => !prev);
   };
@@ -167,7 +170,7 @@ export default function EditCalendarModal({
     setLeaveAlertDialog(false);
   };
 
-  console.log("Google Cal List: ", googleCalList);
+  // console.log("Google Cal List: ", googleCalList);
 
   return (
     <>
@@ -225,31 +228,16 @@ export default function EditCalendarModal({
                 </Form>
               )}
             </Formik>
-            <FormLabel>Calendars</FormLabel>
-            <Text>Google</Text>
-            <VStack
-              divider={<StackDivider borderColor="gray.200" />}
-              style={{
-                border: "1px solid gray",
-                padding: "10px",
-                borderRadius: "10px",
-              }}
-              align="stretch"
-            >
-              {googleCalList &&
-                googleCalList.map((cal) => (
-                  <Checkbox key={cal.id} id={cal.id}>
-                    {cal.summary}
-                    {/* | {cal.id} */}
-                  </Checkbox>
-                ))}
-            </VStack>
+            <ImportCalendar
+              googleCalList={googleCalList}
+              selectedCalendar={selectedCalendar}
+              events={events}
+              setEvents={setEvents}
+              setEditCalendarModal={setEditCalendarModal}
+            />
           </ModalBody>
           <ModalFooter>
             <Box minWidth="100%">
-              <Button colorScheme="teal" minWidth="100%" mb={2}>
-                Done
-              </Button>
               {isMember ? (
                 <Button
                   colorScheme="red"

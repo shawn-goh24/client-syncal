@@ -9,7 +9,8 @@ import Sidebar from "@/components/SideBar";
 import InfoBar from "@/components/InfoBar";
 import { Box } from "@chakra-ui/react";
 import Calendar from "@/components/Calendar";
-import axios from "axios";
+import axios, { Axios } from "axios";
+import { useRouter } from "next/router";
 
 export const AccessTokenContext = createContext();
 export const UserContext = createContext();
@@ -23,9 +24,11 @@ export default function index({ googleCalList }) {
   const [selectedCalendar, setSelectedCalendar] = useState();
   const [calendars, setCalendars] = useState();
   const calendarRef = createRef();
+  // const router = useRouter();
+  // const [googleCalList, setGoogleCalList] = useState();
 
-  console.log(user);
-  console.log("google cal", googleCalList);
+  // console.log(user);
+  // console.log("google cal", googleCalList);
 
   useEffect(() => {
     if (user) {
@@ -39,6 +42,66 @@ export default function index({ googleCalList }) {
       getAccessTokenApi();
     }
   }, [user]);
+
+  // useEffect(() => {
+  //   if (accessToken) {
+  //     const code = router.query.code && router.query.code;
+  //     console.log(code);
+  //     if (code) {
+  //       window.localStorage.setItem("GOOGLE_AUTHORIZATION_CODE", code);
+  //     }
+
+  //     if (window.localStorage.getItem("GOOGLE_AUTHORIZATION_CODE")) {
+  //       getGoogleCalendarApi();
+  //       getGoogleRefreshToken();
+  //     } else {
+  //       getRfUrlApi();
+  //     }
+  //   }
+  // }, [accessToken]);
+
+  // const getGoogleRefreshToken = async () => {
+  //   const response = await axios.post(
+  //     `http://localhost:8080/googleCal/rf`,
+  //     {
+  //       code: window.localStorage.getItem("GOOGLE_AUTHORIZATION_CODE"),
+  //     },
+  //     {
+  //       headers: {
+  //         Authorization: `Bearer ${accessToken}`,
+  //       },
+  //     }
+  //   );
+
+  //   console.log("rf: ", response.data);
+  // };
+
+  // const getGoogleCalendarApi = async () => {
+  //   const sub = user.sub.split("|")[0];
+  //   const id = user.sub.split("|")[1];
+  //   const response = await axios.get(
+  //     `http://localhost:8080/googleCal/${sub}/${id}`,
+  //     {
+  //       headers: {
+  //         Authorization: `Bearer ${accessToken}`,
+  //       },
+  //     }
+  //   );
+
+  //   setGoogleCalList(response.data);
+  //   // return response.data;
+  // };
+  // const getRfUrlApi = async () => {
+  //   const res = await axios.get(`http://localhost:8080/googleCal/rfurl`, {
+  //     headers: {
+  //       Authorization: `Bearer ${accessToken}`,
+  //     },
+  //   });
+
+  //   console.log(res.data);
+  //   window.location.replace(res.data);
+  //   // return res.data;
+  // };
 
   const getUserApi = async (token) => {
     const request = await axios.post(
@@ -102,6 +165,10 @@ export const getServerSideProps = withPageAuthRequired({
       const { accessToken } = await getAccessToken(context.req, context.res);
       const session = await getSession(context.req, context.res);
       const currUser = session?.user;
+      let googleCalList;
+      // const router = useRouter();
+      // const code = context.query.code && context.query.code;
+      // console.log(code);
 
       const getGoogleCalendarApi = async () => {
         const sub = currUser.sub.split("|")[0];
@@ -118,7 +185,29 @@ export const getServerSideProps = withPageAuthRequired({
         return response.data;
       };
 
-      const googleCalList = await getGoogleCalendarApi();
+      // const getRfUrlApi = async () => {
+      //   const res = await axios.get(`http://localhost:8080/rfurl`, {
+      //     headers: {
+      //       Authorization: `Bearer ${accessToken}`,
+      //     },
+      //   });
+
+      //   return res.data;
+      // };
+
+      // if (code) {
+      //   window.localStorage.setItem("GOOGLE_REFRESH_TOKEN", code);
+      // }
+
+      // if (window.localStorage.getItem("GOOGLE_REFRESH_TOKEN")) {
+      googleCalList = await getGoogleCalendarApi();
+      // } else {
+      //   console.log("here");
+
+      //   const url = getRfUrlApi();
+      //   window.location.replace(url);
+      //   console.log("here");
+      // }
 
       return {
         props: { googleCalList },

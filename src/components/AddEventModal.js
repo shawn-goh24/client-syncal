@@ -32,13 +32,13 @@ export default function AddEventModal({
   const currUser = useContext(UserContext);
 
   const onAddEvent = (values, actions) => {
-    console.log("here2");
+    // console.log("here2");
 
     const newValues = { ...values };
     if (newValues.allDay) {
       newValues.end = moment(newValues.end).add(1, "day").format("YYYY-MM-DD");
     }
-    console.log(newValues);
+    // console.log(newValues);
 
     addEventApi(newValues, actions);
     // console.log("Submitted", values);
@@ -48,7 +48,7 @@ export default function AddEventModal({
 
   const addEventApi = async (newEventValues, actions) => {
     // await new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log("here");
+    // console.log("here");
     const newlyAddedEvent = await axios.post(
       `http://localhost:8080/event/add`,
       {
@@ -62,7 +62,7 @@ export default function AddEventModal({
         },
       }
     );
-    console.log(newlyAddedEvent.data);
+    // console.log(newlyAddedEvent.data);
     setEvents((prev) => [...prev, newlyAddedEvent.data]);
     actions.resetForm();
     setAddEventModal();
@@ -106,7 +106,7 @@ export default function AddEventModal({
                   type="text"
                   placeholder="Enter event title"
                 />
-                <CustomFormCheckbox name="allDay" />
+                <CustomFormCheckbox name="allDay" text="All Day" />
                 <CustomSelect
                   label="Color"
                   name="color"
