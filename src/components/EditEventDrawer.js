@@ -68,7 +68,7 @@ export default function EditEventDrawer({
       }
     );
     // console.log(editedEvent.data);
-    let eventList = events;
+    let eventList = [...events];
     const eventToReplace = eventList.findIndex((event) => event.id == eventId);
     eventList[eventToReplace] = editedEvent.data;
     // console.log(eventList);
