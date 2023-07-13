@@ -91,6 +91,13 @@ export default function EditEventDrawer({
     setEvents(newEvents.data.Events);
   };
 
+  const getColor = () => {
+    const index = colorOptions.findIndex(
+      (color) => color.value == selectedEvent?.backgroundColor
+    );
+    return colorOptions[index];
+  };
+
   return (
     // selectedEvent && (
     <>
@@ -139,7 +146,7 @@ export default function EditEventDrawer({
                 // endDateTime: moment(selectedEvent.end).format("YYYY-MM-DDTHH:mm"),
                 // startDate: moment(selectedEvent.start).format("YYYY-MM-DD"),
                 // endDate: moment(selectedEvent.end).format("YYYY-MM-DD"),
-                color: colorOptions[0], // need utils function to get the color
+                color: getColor().value, // need utils function to get the color
                 description: selectedEvent?.description,
                 location: selectedEvent?.location,
                 allDay: selectedEvent?.allDay,
@@ -156,7 +163,11 @@ export default function EditEventDrawer({
                       type="text"
                       placeholder="Enter event title"
                     />
-                    <CustomFormCheckbox name="allDay" text="All Day" />
+                    <CustomFormCheckbox
+                      name="allDay"
+                      text="All Day"
+                      defaultChecked={props.getFieldMeta().value.allDay}
+                    />
                     <CustomSelect
                       label="Color"
                       name="color"
@@ -165,13 +176,13 @@ export default function EditEventDrawer({
                         props.setFieldValue("color", value.value)
                       }
                       value={props.values.color}
-                      defaultValue={() => {
-                        const index = colorOptions.findIndex(
-                          (color) =>
-                            color.value == selectedEvent?.backgroundColor
-                        );
-                        return colorOptions[index];
-                      }}
+                      // defaultValue={() => {
+                      //   const index = colorOptions.findIndex(
+                      //     (color) =>
+                      //       color.value == selectedEvent?.backgroundColor
+                      //   );
+                      //   return colorOptions[index];
+                      // }}
                     />
                     <CustomFormInput
                       label="Starts"

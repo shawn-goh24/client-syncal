@@ -85,6 +85,7 @@ export default function CustomSelect({
         options={colorOptions}
         styles={colourStyles}
       />
+      {meta.touched && meta.error && <div>{meta.error}</div>}
     </>
   );
 }
