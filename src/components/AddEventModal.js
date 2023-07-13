@@ -37,6 +37,7 @@ export default function AddEventModal({
     const newValues = { ...values };
     if (newValues.allDay) {
       newValues.end = moment(newValues.end).add(1, "day").format("YYYY-MM-DD");
+      newValues.start = moment(newValues.start).format("YYYY-MM-DD");
     }
     // console.log(newValues);
 
@@ -87,8 +88,8 @@ export default function AddEventModal({
             //   .format("YYYY-MM-DDTHH:mm"),
             // startDate: moment(new Date()).format("YYYY-MM-DD"),
             // endDate: moment(new Date()).format("YYYY-MM-DD"),
-            start: moment(new Date()).format("YYYY-MM-DDTHH:mm"),
-            end: moment(new Date()).add(1, "hour").format("YYYY-MM-DDTHH:mm"),
+            start: moment().format("YYYY-MM-DDTHH:mm"),
+            end: moment().add(1, "hour").format("YYYY-MM-DDTHH:mm"),
             color: colorOptions[0],
             description: "",
             location: "",

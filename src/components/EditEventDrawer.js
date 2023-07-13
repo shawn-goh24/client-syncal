@@ -49,6 +49,7 @@ export default function EditEventDrawer({
     const newValues = { ...values };
     if (newValues.allDay) {
       newValues.end = moment(newValues.end).add(1, "day").format("YYYY-MM-DD");
+      newValues.start = moment(newValues.start).format("YYYY-MM-DD");
     }
     editEventApi(selectedEvent?.id, newValues);
     setEditEventDrawer((prev) => !prev);
@@ -136,9 +137,7 @@ export default function EditEventDrawer({
                 title: selectedEvent?.title,
                 start: moment(selectedEvent?.start).format("YYYY-MM-DDTHH:mm"),
                 end: selectedEvent?.end
-                  ? moment(selectedEvent?.end)
-                      .add(1, "hour") // check this
-                      .format("YYYY-MM-DDTHH:mm")
+                  ? moment(selectedEvent?.end).format("YYYY-MM-DDTHH:mm")
                   : null,
                 // startDateTime: moment(selectedEvent.start).format(
                 //   "YYYY-MM-DDTHH:mm"
@@ -222,9 +221,9 @@ export default function EditEventDrawer({
                       }
                       value={
                         props.getFieldMeta().value.allDay
-                          ? moment(props.getFieldMeta().value.end)
-                              .subtract(1, "day")
-                              .format("YYYY-MM-DD")
+                          ? moment(props.getFieldMeta().value.end).format(
+                              "YYYY-MM-DD"
+                            )
                           : moment(props.getFieldMeta().value.end).format(
                               "YYYY-MM-DDTHH:mm"
                             )
