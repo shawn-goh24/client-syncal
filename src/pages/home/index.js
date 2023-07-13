@@ -46,7 +46,7 @@ export default function index({ googleCalList }) {
 
   const getEventListApi = async (calendarId) => {
     const res = await axios.get(
-      `http://localhost:8080/calendar/${calendarId}/list`,
+      `${process.env.SERVER}/calendar/${calendarId}/list`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -75,7 +75,7 @@ export default function index({ googleCalList }) {
 
   // const getGoogleRefreshToken = async () => {
   //   const response = await axios.post(
-  //     `http://localhost:8080/googleCal/rf`,
+  //     `${process.env.SERVER}/googleCal/rf`,
   //     {
   //       code: window.localStorage.getItem("GOOGLE_AUTHORIZATION_CODE"),
   //     },
@@ -93,7 +93,7 @@ export default function index({ googleCalList }) {
   //   const sub = user.sub.split("|")[0];
   //   const id = user.sub.split("|")[1];
   //   const response = await axios.get(
-  //     `http://localhost:8080/googleCal/${sub}/${id}`,
+  //     `${process.env.SERVER}/googleCal/${sub}/${id}`,
   //     {
   //       headers: {
   //         Authorization: `Bearer ${accessToken}`,
@@ -105,7 +105,7 @@ export default function index({ googleCalList }) {
   //   // return response.data;
   // };
   // const getRfUrlApi = async () => {
-  //   const res = await axios.get(`http://localhost:8080/googleCal/rfurl`, {
+  //   const res = await axios.get(`${process.env.SERVER}/googleCal/rfurl`, {
   //     headers: {
   //       Authorization: `Bearer ${accessToken}`,
   //     },
@@ -118,7 +118,7 @@ export default function index({ googleCalList }) {
 
   const getUserApi = async (token) => {
     const request = await axios.post(
-      `http://localhost:8080/user`,
+      `${process.env.SERVER}/user`,
       {
         user,
       },
@@ -191,7 +191,7 @@ export const getServerSideProps = withPageAuthRequired({
         const sub = currUser.sub.split("|")[0];
         const id = currUser.sub.split("|")[1];
         const response = await axios.get(
-          `http://localhost:8080/googleCal/${sub}/${id}`,
+          `${process.env.SERVER}/googleCal/${sub}/${id}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -203,7 +203,7 @@ export const getServerSideProps = withPageAuthRequired({
       };
 
       // const getRfUrlApi = async () => {
-      //   const res = await axios.get(`http://localhost:8080/rfurl`, {
+      //   const res = await axios.get(`${process.env.SERVER}/rfurl`, {
       //     headers: {
       //       Authorization: `Bearer ${accessToken}`,
       //     },

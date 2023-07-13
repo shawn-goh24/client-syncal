@@ -25,9 +25,9 @@ export default function NavigationBar() {
       <Box p="4">synCal</Box>
       <Spacer />
       <ButtonGroup py="4" gap="2">
-        <a href="https://dev-e27oql725amd8bwx.us.auth0.com/authorize?response_type=code&client_id=R91sYprWrLnH8ZVQbYtV8AAhyUmgymRR&redirect_uri=http://localhost:3000/home&scope=openid%20profile&state=xyzABC123">
+        {/* <a href="https://dev-e27oql725amd8bwx.us.auth0.com/authorize?response_type=code&client_id=R91sYprWrLnH8ZVQbYtV8AAhyUmgymRR&redirect_uri=http://localhost:3000/home&scope=openid%20profile&state=xyzABC123">
           Sign In
-        </a>
+        </a> */}
         <Button
           size={isPhoneSize ? "xs" : "sm"}
           colorScheme="teal"

@@ -99,7 +99,7 @@ export default function Calendar({
 
   const getCalendarEventsApi = async (calendarId) => {
     const res = await axios.get(
-      `http://localhost:8080/calendar/${calendarId}`,
+      `${process.env.SERVER}/calendar/${calendarId}`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -113,7 +113,7 @@ export default function Calendar({
   const editEventApi = async (eventId, editedValues) => {
     // await new Promise((resolve) => setTimeout(resolve, 1000));
     const editedEvent = await axios.put(
-      `http://localhost:8080/event/edit/${eventId}`,
+      `${process.env.SERVER}/event/edit/${eventId}`,
       { editedValues },
       {
         headers: {
@@ -174,7 +174,7 @@ export default function Calendar({
     // );
 
     async function getUser() {
-      const res = await fetch("http://localhost:8080/user", {
+      const res = await fetch(`${process.env.SERVER}/user`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -200,6 +200,21 @@ export default function Calendar({
     // }
     // getIdentities();
   };
+
+  // console.log(process.env.SERVER);
+  // console.log(process.env.CLIENT);
+  // console.log(process.env.AUTH0_SECRET);
+  // console.log(process.env.AUTH0_BASE_URL);
+  // console.log(process.env.AUTH0_ISSUER_BASE_URL);
+  // console.log(process.env.AUTH0_CLIENT_ID);
+  // console.log(process.env.AUTH0_CLIENT_SECRET);
+  // console.log(process.env.AUTH0_AUDIENCE);
+  // console.log(process.env.FIREBASE_API);
+  // console.log(process.env.FIREBASE_AUTH_DOMAIN);
+  // console.log(process.env.FIREBASE_PROJECT_ID);
+  // console.log(process.env.FIREBASE_STORAGE_BUCKET);
+  // console.log(process.env.FIREBASE_MESSAGING_SENDER_ID);
+  // console.log(process.env.FIREBASE_APP_ID);
 
   return (
     <div style={{ width: "100%", padding: "0 20px 0 0" }}>

@@ -6,7 +6,7 @@ export default withApiAuthRequired(async function getToken(req, res) {
     // console.log(accessToken);
 
     // This is a contrived example, normally your external API would exist on another domain.
-    // const response = await fetch("http://localhost:8080/user", {
+    // const response = await fetch("${process.env.SERVER}/user", {
     //   headers: {
     //     Authorization: `Bearer ${accessToken}`,
     //   },

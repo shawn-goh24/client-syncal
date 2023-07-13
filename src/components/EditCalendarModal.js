@@ -137,7 +137,7 @@ export default function EditCalendarModal({
     }
 
     const response = await axios.put(
-      `http://localhost:8080/calendar/edit/${selectedCalendar.id}/${currUser.id}`,
+      `${process.env.SERVER}/calendar/edit/${selectedCalendar.id}/${currUser.id}`,
       {
         name: values.name,
         imageUrl: imageUrl,
@@ -178,7 +178,7 @@ export default function EditCalendarModal({
 
   const isUserMember = async () => {
     const res = await axios.get(
-      `http://localhost:8080/calendar/usercalendar/${currUser.id}/${selectedCalendar.id}`,
+      `${process.env.SERVER}/calendar/usercalendar/${currUser.id}/${selectedCalendar.id}`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -194,7 +194,7 @@ export default function EditCalendarModal({
   const handleDeleteCalendar = async () => {
     if (deleteInput === selectedCalendar.name) {
       const response = await axios.delete(
-        `http://localhost:8080/calendar/delete/${selectedCalendar.id}/${currUser.id}`,
+        `${process.env.SERVER}/calendar/delete/${selectedCalendar.id}/${currUser.id}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -214,7 +214,7 @@ export default function EditCalendarModal({
   const handleLeaveCalendar = () => {
     const leaveCalendarApi = async () => {
       const response = await axios.delete(
-        `http://localhost:8080/calendar/leave/${selectedCalendar.id}/${currUser.id}`,
+        `${process.env.SERVER}/calendar/leave/${selectedCalendar.id}/${currUser.id}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -239,7 +239,7 @@ export default function EditCalendarModal({
     // console.log("changeDefaultColor", selectedColor);
     const changeColorApi = async () => {
       const response = await axios.put(
-        `http://localhost:8080/usercalendar/editcolor/${currUser.id}/${selectedCalendar.id}`,
+        `${process.env.SERVER}/usercalendar/editcolor/${currUser.id}/${selectedCalendar.id}`,
         {
           color: selectedColor.value,
         },

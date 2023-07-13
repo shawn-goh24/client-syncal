@@ -51,12 +51,12 @@ export default function InviteMembersModal({
 
   const sendInviteApi = async () => {
     const res = await axios.post(
-      `http://localhost:8080/calendar/invite`,
+      `${process.env.SERVER}/calendar/invite`,
       {
         currUser: currUser,
         members: invitedEmails,
         calendar: selectedCalendar,
-        inviteUrl: `http://localhost:3000/invites/${selectedCalendar.id}`,
+        inviteUrl: `${process.env.CLIENT}/invites/${selectedCalendar.id}`,
       },
       {
         headers: {
@@ -69,7 +69,7 @@ export default function InviteMembersModal({
 
   const addToPendingApi = async () => {
     const res = await axios.post(
-      `http://localhost:8080/pending/add`,
+      `${process.env.SERVER}/pending/add`,
       {
         invitees: invitedEmails,
       },

@@ -46,7 +46,7 @@ export default function ImportCalendar({
     const sub = user.sub.split("|")[0];
     const id = user.sub.split("|")[1];
     const response = await axios.post(
-      `http://localhost:8080/googleCal/${sub}/${id}`,
+      `${process.env.SERVER}/googleCal/${sub}/${id}`,
       {
         selectedCalendarIds: google,
         dbCalendarId: selectedCalendar.id,

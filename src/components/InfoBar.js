@@ -41,7 +41,7 @@ export default function InfoBar({
     if (selectedCalendar) {
       // const getEventListApi = async (calendarId) => {
       //   const res = await axios.get(
-      //     `http://localhost:8080/calendar/${calendarId}/list`,
+      //     `${process.env.SERVER}/calendar/${calendarId}/list`,
       //     {
       //       headers: {
       //         Authorization: `Bearer ${accessToken}`,

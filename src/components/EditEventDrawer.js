@@ -61,7 +61,7 @@ export default function EditEventDrawer({
 
   const editEventApi = async (eventId, editedValues) => {
     const editedEvent = await axios.put(
-      `http://localhost:8080/event/edit/${eventId}`,
+      `${process.env.SERVER}/event/edit/${eventId}`,
       { editedValues },
       {
         headers: {
@@ -80,7 +80,7 @@ export default function EditEventDrawer({
 
   const deleteEventApi = async (eventId) => {
     const newEvents = await axios.delete(
-      `http://localhost:8080/event/delete/${eventId}/${selectedCalendarId}`,
+      `${process.env.SERVER}/event/delete/${eventId}/${selectedCalendarId}`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,

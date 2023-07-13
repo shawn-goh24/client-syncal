@@ -22,7 +22,7 @@ export default function index({
     console.log("Accept");
     const addUserCalendar = async () => {
       const res = await axios.post(
-        `http://localhost:8080/calendar/new/usercalendar`,
+        `${process.env.SERVER}/calendar/new/usercalendar`,
         {
           userEmail: currUser.email,
           calendarId: calendarDetails.id,
@@ -39,7 +39,7 @@ export default function index({
   const handleReject = () => {
     const deletePending = async () => {
       await axios.delete(
-        `http://localhost:8080/pending/delete/${currUser.email}/${calendarDetails.id}`,
+        `${process.env.SERVER}/pending/delete/${currUser.email}/${calendarDetails.id}`,
         { headers: { Authorization: `Bearer ${accessToken}` } }
       );
     };
@@ -113,7 +113,7 @@ export const getServerSideProps = withPageAuthRequired({
 
       const getUserApi = async () => {
         const request = await axios.post(
-          `http://localhost:8080/user`,
+          `${process.env.SERVER}/user`,
           {
             user: currUser,
           },
@@ -128,7 +128,7 @@ export const getServerSideProps = withPageAuthRequired({
       getUserApi();
 
       const checkIfInPending = await axios.get(
-        `http://localhost:8080/pending/${currUser.email}/${context.params.id}`,
+        `${process.env.SERVER}/pending/${currUser.email}/${context.params.id}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -139,7 +139,7 @@ export const getServerSideProps = withPageAuthRequired({
       const isUserValid = checkIfInPending.data.length > 0 ? true : false;
 
       const response = await axios.get(
-        `http://localhost:8080/calendar/invite/${context.params.id}`,
+        `${process.env.SERVER}/calendar/invite/${context.params.id}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,

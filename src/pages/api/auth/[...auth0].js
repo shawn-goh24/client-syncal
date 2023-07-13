@@ -13,7 +13,7 @@ export default handleAuth({
         // connection_scope:
         //   "https://www.googleapis.com/auth/calendar.events.readonly",
         // accessType: "offline",
-        // redirect_uri: "http://localhost:3000/home",
+        // redirect_uri: "${process.env.CLIENT}/home",
       },
     });
   },

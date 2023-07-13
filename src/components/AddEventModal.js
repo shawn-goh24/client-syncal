@@ -52,7 +52,7 @@ export default function AddEventModal({
     // await new Promise((resolve) => setTimeout(resolve, 1000));
     // console.log("here");
     const newlyAddedEvent = await axios.post(
-      `http://localhost:8080/event/add`,
+      `${process.env.SERVER}/event/add`,
       {
         newEventValues: newEventValues,
         calendarId: selectedCalendarId,

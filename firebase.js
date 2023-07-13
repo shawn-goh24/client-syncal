@@ -7,12 +7,12 @@ import { getStorage } from "firebase/storage";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyAjtElndk6IZSUXWboot4Ap7kfu_Dv5Mdw",
-  authDomain: "syncal-ed07c.firebaseapp.com",
-  projectId: "syncal-ed07c",
-  storageBucket: "syncal-ed07c.appspot.com",
-  messagingSenderId: "367173490892",
-  appId: "1:367173490892:web:777de594ef509f76014a69",
+  apiKey: process.env.FIREBASE_API,
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.FIREBASE_APP_ID,
 };
 
 // Initialize Firebase

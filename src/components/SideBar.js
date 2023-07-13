@@ -24,7 +24,7 @@ export default function Sidebar({
   };
 
   const getGroupsApi = async (userId) => {
-    const res = await axios.get(`http://localhost:8080/user/group/${userId}`, {
+    const res = await axios.get(`${process.env.SERVER}/user/group/${userId}`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
