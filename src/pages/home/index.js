@@ -24,6 +24,7 @@ export default function index({ googleCalList }) {
   const [selectedCalendar, setSelectedCalendar] = useState();
   const [calendars, setCalendars] = useState();
   const calendarRef = createRef();
+  const [eventList, setEventList] = useState();
   // const router = useRouter();
   // const [googleCalList, setGoogleCalList] = useState();
 
@@ -42,6 +43,18 @@ export default function index({ googleCalList }) {
       getAccessTokenApi();
     }
   }, [user]);
+
+  const getEventListApi = async (calendarId) => {
+    const res = await axios.get(
+      `http://localhost:8080/calendar/${calendarId}/list`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    setEventList(res.data);
+  };
 
   // useEffect(() => {
   //   if (accessToken) {
@@ -140,6 +153,8 @@ export default function index({ googleCalList }) {
               selectedMonth={selectedMonth}
               setSelectedMonth={setSelectedMonth}
               selectedCalendar={selectedCalendar}
+              getEventListApi={getEventListApi}
+              eventList={eventList}
             />
             <Calendar
               calendarRef={calendarRef}
@@ -152,6 +167,7 @@ export default function index({ googleCalList }) {
               setCalendars={setCalendars}
               googleCalList={googleCalList}
               setSelectedCalendar={setSelectedCalendar}
+              getEventListApi={getEventListApi}
             />
           </Box>
         </AccessTokenContext.Provider>

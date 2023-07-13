@@ -22,6 +22,8 @@ export default function InfoBar({
   setSelectedMonth,
   calendarRef,
   selectedCalendar,
+  getEventListApi,
+  eventList,
 }) {
   // const [selectedDate, onChange] = useState(new Date());
   const accessToken = useContext(AccessTokenContext);
@@ -37,17 +39,17 @@ export default function InfoBar({
 
   useEffect(() => {
     if (selectedCalendar) {
-      const getEventListApi = async (calendarId) => {
-        const res = await axios.get(
-          `http://localhost:8080/calendar/${calendarId}/list`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
-        setEvents(res.data);
-      };
+      // const getEventListApi = async (calendarId) => {
+      //   const res = await axios.get(
+      //     `http://localhost:8080/calendar/${calendarId}/list`,
+      //     {
+      //       headers: {
+      //         Authorization: `Bearer ${accessToken}`,
+      //       },
+      //     }
+      //   );
+      //   setEvents(res.data);
+      // };
 
       getEventListApi(selectedCalendar.id);
     }
@@ -87,7 +89,7 @@ export default function InfoBar({
             overflowY="scroll"
           >
             {/* {eventList} */}
-            <EventLists events={events} />
+            <EventLists events={eventList} />
           </AccordionPanel>
         </AccordionItem>
         {/* <AccordionItem>

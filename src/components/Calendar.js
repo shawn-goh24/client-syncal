@@ -64,6 +64,7 @@ export default function Calendar({
   setCalendars,
   googleCalList,
   setSelectedCalendar,
+  getEventListApi,
 }) {
   const [events, setEvents] = useState([]);
   const [selectedView, setSelectedView] = useState(Views.Month);
@@ -395,6 +396,7 @@ export default function Calendar({
         events={events}
         setEvents={setEvents}
         selectedCalendarId={selectedCalendar?.id}
+        getEventListApi={getEventListApi}
       />
       <EditCalendarModal
         editCalendarModal={editCalendarModal}

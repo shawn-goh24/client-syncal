@@ -36,6 +36,7 @@ export default function EditEventDrawer({
   events,
   setEvents,
   selectedCalendarId,
+  getEventListApi,
 }) {
   const accessToken = useContext(AccessTokenContext);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -73,6 +74,7 @@ export default function EditEventDrawer({
     eventList[eventToReplace] = editedEvent.data;
     // console.log(eventList);
     setEvents(eventList);
+    getEventListApi(selectedCalendarId);
   };
 
   const deleteEventApi = async (eventId) => {
