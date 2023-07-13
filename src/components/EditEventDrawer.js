@@ -145,7 +145,7 @@ export default function EditEventDrawer({
                 // endDateTime: moment(selectedEvent.end).format("YYYY-MM-DDTHH:mm"),
                 // startDate: moment(selectedEvent.start).format("YYYY-MM-DD"),
                 // endDate: moment(selectedEvent.end).format("YYYY-MM-DD"),
-                color: getColor().value, // need utils function to get the color
+                color: getColor()?.value, // need utils function to get the color
                 description: selectedEvent?.description,
                 location: selectedEvent?.location,
                 allDay: selectedEvent?.allDay,
