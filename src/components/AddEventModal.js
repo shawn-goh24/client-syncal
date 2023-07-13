@@ -25,6 +25,7 @@ export default function AddEventModal({
   // addEventApi,
   selectedCalendarId,
   setEvents,
+  getEventListApi,
 }) {
   const initialRef = useRef(null);
   const finalRef = useRef(null);
@@ -65,8 +66,16 @@ export default function AddEventModal({
     );
     // console.log(newlyAddedEvent.data);
     setEvents((prev) => [...prev, newlyAddedEvent.data]);
+    getEventListApi(selectedCalendarId);
     actions.resetForm();
-    setAddEventModal();
+    setAddEventModal(false);
+  };
+
+  const getColor = () => {
+    const index = colorOptions.findIndex(
+      (color) => color.value == colorOptions[0].value
+    );
+    return colorOptions[index];
   };
 
   return (
@@ -90,7 +99,7 @@ export default function AddEventModal({
             // endDate: moment(new Date()).format("YYYY-MM-DD"),
             start: moment().format("YYYY-MM-DDTHH:mm"),
             end: moment().add(1, "hour").format("YYYY-MM-DDTHH:mm"),
-            color: colorOptions[0],
+            color: getColor()?.value,
             description: "",
             location: "",
             allDay: false,

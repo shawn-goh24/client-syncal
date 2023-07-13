@@ -90,6 +90,7 @@ export default function EditEventDrawer({
 
     // console.log(newEvents.data);
     setEvents(newEvents.data.Events);
+    getEventListApi(selectedCalendarId);
   };
 
   const getColor = () => {

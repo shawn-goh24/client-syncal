@@ -387,6 +387,7 @@ export default function Calendar({
         setAddEventModal={setAddEventModal}
         selectedCalendarId={selectedCalendar?.id}
         setEvents={setEvents}
+        getEventListApi={getEventListApi}
       />
       <EditEventDrawer
         editEventDrawer={editEventDrawer}
