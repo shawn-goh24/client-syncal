@@ -151,6 +151,7 @@ export default function index({ googleCalList }) {
               calendars={calendars}
               setCalendars={setCalendars}
               googleCalList={googleCalList}
+              setSelectedCalendar={setSelectedCalendar}
             />
           </Box>
         </AccessTokenContext.Provider>

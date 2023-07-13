@@ -41,6 +41,61 @@ import {
 } from "@auth0/nextjs-auth0";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import ImportCalendar from "./ImportCalendar";
+import { colorOptions } from "@/contants";
+import Select from "react-select";
+import chroma from "chroma-js";
+
+const dot = (color = "transparent") => ({
+  alignItems: "center",
+  display: "flex",
+
+  ":before": {
+    backgroundColor: color,
+    borderRadius: 10,
+    content: '" "',
+    display: "block",
+    marginRight: 8,
+    height: 10,
+    width: 10,
+  },
+});
+
+const colourStyles = {
+  control: (styles) => ({ ...styles, backgroundColor: "white" }),
+  option: (styles, { data, isDisabled, isFocused, isSelected }) => {
+    const color = chroma(data.value);
+    return {
+      ...styles,
+      backgroundColor: isDisabled
+        ? undefined
+        : isSelected
+        ? data.value
+        : isFocused
+        ? color.alpha(0.1).css()
+        : undefined,
+      color: isDisabled
+        ? "#ccc"
+        : isSelected
+        ? chroma.contrast(color, "white") > 2
+          ? "white"
+          : "black"
+        : data.value,
+      cursor: isDisabled ? "not-allowed" : "default",
+
+      ":active": {
+        ...styles[":active"],
+        backgroundColor: !isDisabled
+          ? isSelected
+            ? data.value
+            : color.alpha(0.3).css()
+          : undefined,
+      },
+    };
+  },
+  input: (styles) => ({ ...styles, ...dot() }),
+  placeholder: (styles) => ({ ...styles, ...dot("#ccc") }),
+  singleValue: (styles, { data }) => ({ ...styles, ...dot(data.value) }),
+};
 
 export default function EditCalendarModal({
   editCalendarModal,
@@ -50,6 +105,7 @@ export default function EditCalendarModal({
   googleCalList,
   setEvents,
   events,
+  setSelectedCalendar,
 }) {
   const [calendarImagePreview, setCalendarImagePreview] = useState();
   const [calendarImageUrl, setCalendarImageUrl] = useState();
@@ -62,6 +118,8 @@ export default function EditCalendarModal({
   const currUser = useContext(UserContext);
   const cancelRef = useRef();
   const leaveCancelRef = useRef();
+
+  console.log(selectedCalendar);
 
   useEffect(() => {
     if (selectedCalendar) {
@@ -170,6 +228,32 @@ export default function EditCalendarModal({
     setLeaveAlertDialog(false);
   };
 
+  const defaultColorValue = (options, value) =>
+    options
+      ? options.find((option) => {
+          return option.value === value;
+        })
+      : "";
+
+  const changeDefaultColor = (selectedColor) => {
+    // console.log("changeDefaultColor", selectedColor);
+    const changeColorApi = async () => {
+      const response = await axios.put(
+        `http://localhost:8080/usercalendar/editcolor/${currUser.id}/${selectedCalendar.id}`,
+        {
+          color: selectedColor.value,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      console.log(response.data);
+      setSelectedCalendar((prev) => ({ ...prev, UserCalendar: response.data }));
+    };
+    changeColorApi();
+  };
   // console.log("Google Cal List: ", googleCalList);
 
   return (
@@ -228,6 +312,27 @@ export default function EditCalendarModal({
                 </Form>
               )}
             </Formik>
+            <FormLabel>Default Color</FormLabel>
+            <Select
+              name="color"
+              options={colorOptions}
+              defaultValue={
+                selectedCalendar &&
+                defaultColorValue(
+                  colorOptions,
+                  selectedCalendar.UserCalendar?.color
+                )
+              }
+              onChange={changeDefaultColor}
+              // value={props.values.color}
+              // defaultValue={() => {
+              //   const index = colorOptions.findIndex(
+              //     (color) => color.value == selectedEvent?.backgroundColor
+              //   );
+              //   return colorOptions[index];
+              // }}
+              styles={colourStyles}
+            />
             <ImportCalendar
               googleCalList={googleCalList}
               selectedCalendar={selectedCalendar}

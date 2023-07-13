@@ -63,6 +63,7 @@ export default function Calendar({
   calendars,
   setCalendars,
   googleCalList,
+  setSelectedCalendar,
 }) {
   const [events, setEvents] = useState([]);
   const [selectedView, setSelectedView] = useState(Views.Month);
@@ -403,6 +404,7 @@ export default function Calendar({
         googleCalList={googleCalList}
         setEvents={setEvents}
         events={events}
+        setSelectedCalendar={setSelectedCalendar}
       />
       <InviteMembersModal
         inviteMembersModal={inviteMembersModal}
