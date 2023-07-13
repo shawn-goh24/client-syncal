@@ -1,21 +1,8 @@
-export const colors = [
-  { pink: "#FFD1DC" },
-  { purple: "#B19CD9" },
-  { blue: "#AEC6CF" },
-  { yellow: "#FDFD96" },
-  { green: "#90EE90" },
-  { orange: " #FFB347" },
-  { peach: "#FFE5B4" },
-  { gray: "#CFCFC4" },
-  { magenta: "#FFC0CB" },
-  { skyBlue: "#ADD8E6" },
-];
-
 export const colorOptions = [
-  { label: "Ocean", value: "#00B8D9", isFixed: true },
-  { label: "Blue", value: "#0052CC", isDisabled: true },
+  { label: "Ocean", value: "#00B8D9" },
+  { label: "Blue", value: "#0052CC" },
   { label: "Purple", value: "#5243AA" },
-  { label: "Red", value: "#FF5630", isFixed: true },
+  { label: "Red", value: "#FF5630" },
   { label: "Orange", value: "#FF8B00" },
   { label: "Yellow", value: "#FFC400" },
   { label: "Green", value: "#36B37E" },

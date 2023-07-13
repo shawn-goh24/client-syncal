@@ -214,12 +214,12 @@ export const getServerSideProps = withPageAuthRequired({
       };
     } catch (error) {
       console.log(error);
-      // return {
-      //   redirect: {
-      //     destination: "/error",
-      //     permanent: false,
-      //   },
-      // };
+      return {
+        redirect: {
+          destination: "/",
+          permanent: false,
+        },
+      };
     }
   },
 });

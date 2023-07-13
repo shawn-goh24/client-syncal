@@ -111,7 +111,7 @@ export const getServerSideProps = withPageAuthRequired({
       const session = await getSession(context.req, context.res);
       const currUser = session?.user;
 
-      const getUserApi = async (token) => {
+      const getUserApi = async () => {
         const request = await axios.post(
           `http://localhost:8080/user`,
           {
@@ -119,11 +119,12 @@ export const getServerSideProps = withPageAuthRequired({
           },
           {
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${accessToken}`,
             },
           }
         );
       };
+
       getUserApi();
 
       const checkIfInPending = await axios.get(
