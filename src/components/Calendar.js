@@ -326,6 +326,16 @@ export default function Calendar({
                 onClick={() => {
                   calendarRef.current.getApi().changeView("timeGridWeek");
                   setSelectedView(Views.Week);
+                  setSelectedMonth(
+                    new Date(
+                      calendarRef.current.calendar.currentData.currentDate
+                    )
+                  );
+                  setSelectedDate(
+                    new Date(
+                      calendarRef.current.calendar.currentData.currentDate
+                    )
+                  );
                 }}
               >
                 Week
@@ -334,6 +344,16 @@ export default function Calendar({
                 onClick={() => {
                   calendarRef.current.getApi().changeView("dayGridMonth");
                   setSelectedView(Views.Month);
+                  setSelectedMonth(
+                    new Date(
+                      calendarRef.current.calendar.currentData.currentDate
+                    )
+                  );
+                  setSelectedDate(
+                    new Date(
+                      calendarRef.current.calendar.currentData.currentDate
+                    )
+                  );
                 }}
               >
                 Month
@@ -397,7 +417,9 @@ export default function Calendar({
         ]}
         initialView={"dayGridMonth"}
         // weekends={false}
-        headerToolbar={false}
+        headerToolbar={{
+          left: "title",
+        }}
         events={events}
         editable={true}
         eventResizableFromStart={true}
