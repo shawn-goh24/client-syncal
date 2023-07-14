@@ -6,6 +6,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  useToast,
 } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
 import { eventFormSchema } from "@/formSchema/formSchema";
@@ -32,8 +33,9 @@ export default function AddEventModal({
   const finalRef = useRef(null);
   const accessToken = useContext(AccessTokenContext);
   const currUser = useContext(UserContext);
+  const toast = useToast();
 
-  console.log(selectedCalendar?.UserCalendar?.color);
+  // console.log(selectedCalendar?.UserCalendar?.color);
 
   const onAddEvent = (values, actions) => {
     // console.log("here2");
@@ -72,6 +74,12 @@ export default function AddEventModal({
     getEventListApi(selectedCalendarId);
     actions.resetForm();
     setAddEventModal(false);
+    toast({
+      title: "New Event added",
+      position: "top",
+      isClosable: true,
+      status: "success",
+    });
   };
 
   const getColor = () => {

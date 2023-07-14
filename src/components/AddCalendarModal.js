@@ -9,6 +9,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  useToast,
 } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
 import { calendarFormSchema } from "@/formSchema/calendarFormSchema";
@@ -32,6 +33,7 @@ export default function AddCalendarModal({
   const currUser = useContext(UserContext);
   const [calendarImagePreview, setCalendarImagePreview] = useState();
   const [calendarImageUrl, setCalendarImageUrl] = useState();
+  const toast = useToast();
 
   const uploadCalendarImage = (event) => {
     const imagePreview = URL.createObjectURL(event.target.files[0]);
@@ -86,6 +88,12 @@ export default function AddCalendarModal({
     // console.log(response.data);
     setCalendars((prev) => [...prev, response.data]);
     getGroupsApi(currUser.id, true);
+    toast({
+      title: "New calendar added",
+      position: "top",
+      isClosable: true,
+      status: "success",
+    });
   };
 
   return (

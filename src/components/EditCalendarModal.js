@@ -24,6 +24,7 @@ import {
   Switch,
   Text,
   VStack,
+  useToast,
 } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
 import React, { useContext, useEffect, useRef, useState } from "react";
@@ -118,8 +119,7 @@ export default function EditCalendarModal({
   const currUser = useContext(UserContext);
   const cancelRef = useRef();
   const leaveCancelRef = useRef();
-
-  console.log(selectedCalendar);
+  const toast = useToast();
 
   useEffect(() => {
     if (selectedCalendar) {
@@ -152,6 +152,12 @@ export default function EditCalendarModal({
     // console.log(response.data.Calendars);
     setCalendars(response.data.Calendars);
     setEditCalendarModal((prev) => !prev);
+    toast({
+      title: "Calendar edited",
+      position: "top",
+      isClosable: true,
+      status: "info",
+    });
   };
 
   const uploadCalendarImage = (event) => {
@@ -209,6 +215,12 @@ export default function EditCalendarModal({
       setIsDeleteInvalid(true);
     }
     setDeleteInput("");
+    toast({
+      title: "Calendar deleted",
+      position: "top",
+      isClosable: true,
+      status: "success",
+    });
   };
 
   const handleLeaveCalendar = () => {

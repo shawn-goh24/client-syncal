@@ -20,6 +20,7 @@ import {
   Tag,
   Text,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
 import React, { useContext, useRef, useState } from "react";
@@ -46,6 +47,7 @@ export default function EditEventDrawer({
   const accessToken = useContext(AccessTokenContext);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef();
+  const toast = useToast();
 
   const handleEditEvent = (values, actions) => {
     // console.log("Edited");
@@ -80,6 +82,12 @@ export default function EditEventDrawer({
     // console.log(eventList);
     setEvents(eventList);
     getEventListApi(selectedCalendarId);
+    toast({
+      title: "Event edited",
+      position: "top",
+      isClosable: true,
+      status: "info",
+    });
   };
 
   const deleteEventApi = async (eventId) => {
@@ -95,6 +103,12 @@ export default function EditEventDrawer({
     // console.log(newEvents.data);
     setEvents(newEvents.data.Events);
     getEventListApi(selectedCalendarId);
+    toast({
+      title: "Event deleted",
+      position: "top",
+      isClosable: true,
+      status: "success",
+    });
   };
 
   const getColor = () => {
