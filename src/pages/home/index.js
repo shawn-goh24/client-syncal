@@ -56,6 +56,21 @@ export default function index({ googleCalList }) {
     setEventList(res.data);
   };
 
+  const getGroupsApi = async (userId, newCalendar) => {
+    const res = await axios.get(`${process.env.SERVER}/user/group/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    // console.log(res.data.Calendars);
+    setCalendars(res.data.Calendars);
+    if (newCalendar) {
+      setSelectedCalendar(res.data.Calendars[res.data.Calendars.length - 1]);
+    } else {
+      setSelectedCalendar(res.data.Calendars[0]);
+    }
+  };
+
   // useEffect(() => {
   //   if (accessToken) {
   //     const code = router.query.code && router.query.code;
@@ -145,6 +160,7 @@ export default function index({ googleCalList }) {
               setSelectedCalendar={setSelectedCalendar}
               calendars={calendars}
               setCalendars={setCalendars}
+              getGroupsApi={getGroupsApi}
             />
             <InfoBar
               calendarRef={calendarRef}

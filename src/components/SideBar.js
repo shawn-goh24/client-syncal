@@ -12,6 +12,7 @@ export default function Sidebar({
   setSelectedCalendar,
   calendars,
   setCalendars,
+  getGroupsApi,
 }) {
   // const [calendars, setCalendars] = useState();
   const [addCalendarModal, setAddCalendarModal] = useState(false);
@@ -23,16 +24,16 @@ export default function Sidebar({
     setSelectedCalendar(cal);
   };
 
-  const getGroupsApi = async (userId) => {
-    const res = await axios.get(`${process.env.SERVER}/user/group/${userId}`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-    // console.log(res.data.Calendars);
-    setCalendars(res.data.Calendars);
-    setSelectedCalendar(res.data.Calendars[0]);
-  };
+  // const getGroupsApi = async (userId) => {
+  //   const res = await axios.get(`${process.env.SERVER}/user/group/${userId}`, {
+  //     headers: {
+  //       Authorization: `Bearer ${accessToken}`,
+  //     },
+  //   });
+  //   // console.log(res.data.Calendars);
+  //   setCalendars(res.data.Calendars);
+  //   setSelectedCalendar(res.data.Calendars[0]);
+  // };
 
   useEffect(() => {
     currUser && getGroupsApi(currUser.id);
@@ -116,6 +117,7 @@ export default function Sidebar({
         addCalendarModal={addCalendarModal}
         setAddCalendarModal={setAddCalendarModal}
         setCalendars={setCalendars}
+        getGroupsApi={getGroupsApi}
       />
     </Box>
   );

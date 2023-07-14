@@ -24,6 +24,7 @@ export default function AddCalendarModal({
   addCalendarModal,
   setAddCalendarModal,
   setCalendars,
+  getGroupsApi,
 }) {
   const initialRef = useRef(null);
   const finalRef = useRef(null);
@@ -84,6 +85,7 @@ export default function AddCalendarModal({
 
     // console.log(response.data);
     setCalendars((prev) => [...prev, response.data]);
+    getGroupsApi(currUser.id, true);
   };
 
   return (

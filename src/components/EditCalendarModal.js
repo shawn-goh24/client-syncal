@@ -207,8 +207,8 @@ export default function EditCalendarModal({
       setIsDeleteInvalid(false);
     } else {
       setIsDeleteInvalid(true);
-      setDeleteInput("");
     }
+    setDeleteInput("");
   };
 
   const handleLeaveCalendar = () => {
