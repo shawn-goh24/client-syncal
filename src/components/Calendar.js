@@ -421,7 +421,9 @@ export default function Calendar({
               variant="ghost"
             />
             <MenuList>
-              <MenuItem>Profile Setting</MenuItem>
+              <MenuItem onClick={() => router.push(`/profile/${currUser.id}`)}>
+                Profile Setting
+              </MenuItem>
               <MenuItem onClick={() => setEditCalendarModal((prev) => !prev)}>
                 Calendar Setting
               </MenuItem>
