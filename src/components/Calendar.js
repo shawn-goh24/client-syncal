@@ -128,7 +128,14 @@ export default function Calendar({
   const handleEventResize = (eventResizeInfo) => {
     const { event } = eventResizeInfo;
     // change database date upon resizing
-    editEventApi(event.id, { start: event.start, end: event.end });
+    let start = event.start;
+    let end = event.end;
+    if (event.allDay) {
+      start = moment(event.start).format("YYYY-MM-DD");
+      end = moment(event.end).format("YYYY-MM-DD");
+    }
+
+    editEventApi(event.id, { start: start, end: end });
   };
 
   const handleEventDrop = (eventDropInfo) => {
@@ -137,7 +144,14 @@ export default function Calendar({
     // console.log("Event DnD: ", event.start, event.end);
     // console.log(event.id);
     // const end = event.allDay && event.end ? event.start : event.end;
-    editEventApi(event.id, { start: event.start, end: event.end });
+    let start = event.start;
+    let end = event.end;
+    if (event.allDay) {
+      start = moment(event.start).format("YYYY-MM-DD");
+      end = moment(event.end).format("YYYY-MM-DD");
+    }
+
+    editEventApi(event.id, { start: start, end: end });
   };
 
   const handleSelectSlots = (selectSlotInfo) => {
