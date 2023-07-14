@@ -404,6 +404,7 @@ export default function Calendar({
         selectedCalendarId={selectedCalendar?.id}
         setEvents={setEvents}
         getEventListApi={getEventListApi}
+        selectedCalendar={selectedCalendar}
       />
       <EditEventDrawer
         editEventDrawer={editEventDrawer}

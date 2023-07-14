@@ -26,11 +26,14 @@ export default function AddEventModal({
   selectedCalendarId,
   setEvents,
   getEventListApi,
+  selectedCalendar,
 }) {
   const initialRef = useRef(null);
   const finalRef = useRef(null);
   const accessToken = useContext(AccessTokenContext);
   const currUser = useContext(UserContext);
+
+  console.log(selectedCalendar?.UserCalendar?.color);
 
   const onAddEvent = (values, actions) => {
     // console.log("here2");
@@ -73,7 +76,7 @@ export default function AddEventModal({
 
   const getColor = () => {
     const index = colorOptions.findIndex(
-      (color) => color.value == colorOptions[0].value
+      (color) => color.value == selectedCalendar?.UserCalendar?.color
     );
     return colorOptions[index];
   };
