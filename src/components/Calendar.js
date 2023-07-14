@@ -9,6 +9,7 @@ import moment from "moment";
 import { useState } from "react";
 import {
   Avatar,
+  AvatarGroup,
   Button,
   Drawer,
   DrawerCloseButton,
@@ -73,6 +74,7 @@ export default function Calendar({
   const [selectedEvent, setSelectedEvent] = useState();
   const [editCalendarModal, setEditCalendarModal] = useState(false);
   const [inviteMembersModal, setInviteMembersModal] = useState(false);
+  const [calendarUsers, setCalendarUsers] = useState([]);
 
   // const calendarRef = createRef();
   const today = new Date();
@@ -94,8 +96,25 @@ export default function Calendar({
   }, [selectedDate]);
 
   useEffect(() => {
-    selectedCalendar && getCalendarEventsApi(selectedCalendar.id);
+    if (selectedCalendar) {
+      getCalendarEventsApi(selectedCalendar.id);
+      getAllUserInCalendarApi(selectedCalendar.id);
+    }
   }, [selectedCalendar]);
+
+  const getAllUserInCalendarApi = async (calendarId) => {
+    const res = await axios.get(
+      `${process.env.SERVER}/calendar/users/${calendarId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    console.log(res.data[0]);
+    console.log(res.data[0].Users);
+    setCalendarUsers(res.data[0].Users);
+  };
 
   const getCalendarEventsApi = async (calendarId) => {
     const res = await axios.get(
@@ -230,6 +249,11 @@ export default function Calendar({
   // console.log(process.env.FIREBASE_STORAGE_BUCKET);
   // console.log(process.env.FIREBASE_MESSAGING_SENDER_ID);
   // console.log(process.env.FIREBASE_APP_ID);
+
+  const userLabels =
+    calendarUsers && calendarUsers.map((user) => user.name).join("\n");
+
+  console.log(userLabels);
 
   return (
     <div style={{ width: "100%", padding: "0 20px 0 0" }}>
@@ -370,12 +394,18 @@ export default function Calendar({
           </Tabs>
         </div>
         <Flex alignItems="center" gap={3} zIndex={999}>
-          <Tooltip label={currUser && currUser.name}>
-            <Avatar
-              name={currUser && currUser.name}
-              src={currUser && currUser.avatarUrl}
-              bg="teal.500"
-            />
+          <Tooltip label={userLabels}>
+            <AvatarGroup max={3}>
+              {calendarUsers &&
+                calendarUsers.map((user) => (
+                  <Avatar
+                    key={user.id}
+                    name={user && user.name}
+                    src={user && user.avatarUrl}
+                    bg="teal.500"
+                  />
+                ))}
+            </AvatarGroup>
           </Tooltip>
           <Button
             colorScheme="teal"
