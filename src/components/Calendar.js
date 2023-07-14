@@ -121,6 +121,7 @@ export default function Calendar({
         },
       }
     );
+    getEventListApi(selectedCalendar.id);
     // console.log(editedEvent.data);
   };
 

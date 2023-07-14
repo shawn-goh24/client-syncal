@@ -78,7 +78,7 @@ export default function InfoBar({
           <h2>
             <AccordionButton>
               <Box as="span" flex="1" textAlign="left">
-                Events
+                Upcoming Events
               </Box>
               <AccordionIcon />
             </AccordionButton>
