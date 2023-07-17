@@ -1,4 +1,4 @@
-import { AccessTokenContext } from "@/pages/home";
+import { AccessTokenContext, UserContext } from "@/pages/home";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import {
   Box,
@@ -23,6 +23,7 @@ export default function ImportCalendar({
   const [google, setGoogle] = useState([]);
   const [isImporting, setIsImporting] = useState(false);
   const accessToken = useContext(AccessTokenContext);
+  const currUser = useContext(UserContext);
 
   const checkedItem = (e) => {
     const id = e.target.id;
@@ -46,7 +47,7 @@ export default function ImportCalendar({
     const sub = user.sub.split("|")[0];
     const id = user.sub.split("|")[1];
     const response = await axios.post(
-      `${process.env.SERVER}/googleCal/${sub}/${id}`,
+      `${process.env.SERVER}/googleCal/${sub}/${id}/${currUser.id}`,
       {
         selectedCalendarIds: google,
         dbCalendarId: selectedCalendar.id,

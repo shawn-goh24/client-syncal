@@ -449,9 +449,9 @@ export default function Calendar({
         ]}
         initialView={"dayGridMonth"}
         // weekends={false}
-        headerToolbar={{
-          left: "title",
-        }}
+        // headerToolbar={{
+        //   left: "title",
+        // }}
         events={events}
         editable={true}
         eventResizableFromStart={true}
