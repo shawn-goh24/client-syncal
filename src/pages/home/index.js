@@ -194,69 +194,120 @@ export default function index({ googleCalList }) {
 
 export const getServerSideProps = withPageAuthRequired({
   async getServerSideProps(context) {
+    const { accessToken } = await getAccessToken(context.req, context.res);
+    const session = await getSession(context.req, context.res);
+    const currUser = session?.user;
+    let dbUser;
+    let googleCalList;
+    // const router = useRouter();
+    // const code = context.query.code && context.query.code;
+    // console.log(code);
+    const code = context.query.code;
+    let googleRft;
     try {
-      const { accessToken } = await getAccessToken(context.req, context.res);
-      const session = await getSession(context.req, context.res);
-      const currUser = session?.user;
-      let googleCalList;
-      // const router = useRouter();
-      // const code = context.query.code && context.query.code;
-      // console.log(code);
+      /**
+       * 1. Page loads
+       * Check if user login or is already login
+       * 2. Check user RFT from DB
+       * 3a. If exist: check user accessToken
+       * 3b: if doesnt exist: Load RFT and store in DB
+       * 4: If user accessToken expire: load RFT and get new accesstoken
+       * 5: If user accessToken doesnt expire: continue with process
+       */
 
-      const code = context.query.code;
-      let googleRft;
-
-      if (!code) {
-        const getGoogleRtfUrlApi = async () => {
-          const response = await axios.get(
-            `${process.env.SERVER}/googlecal/rfurl`,
-            {
-              headers: {
-                Authorization: `Bearer ${accessToken}`,
-              },
-            }
-          );
-          console.log(response.data);
-          return response.data;
-        };
-
-        const rftUrl = await getGoogleRtfUrlApi();
-
-        if (rftUrl) {
-          return {
-            redirect: {
-              destination: rftUrl,
-              permanent: false,
+      // Check if refresh token exist in db
+      const getRftFromDbApi = async () => {
+        console.log("HERE");
+        console.log(currUser);
+        console.log(accessToken);
+        const response = await axios.post(
+          `${process.env.SERVER}/user`,
+          {
+            user: currUser,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
             },
+          }
+        );
+        console.log("response.data");
+        dbUser = response.data;
+        return response.data.rft;
+      };
+      let userRft = await getRftFromDbApi();
+      console.log(userRft);
+
+      // UPON LOGIN ONLY or NO REFRESH TOKEN
+      if (!userRft) {
+        if (!code) {
+          const getGoogleRtfUrlApi = async () => {
+            const response = await axios.get(
+              `${process.env.SERVER}/googlecal/rfurl`,
+              {
+                headers: {
+                  Authorization: `Bearer ${accessToken}`,
+                },
+              }
+            );
+            // console.log(response.data);
+            return response.data;
           };
-        }
-      } else {
-        const getCodeApi = async () => {
-          console.log(code);
-          const response = await axios.post(
-            `${process.env.SERVER}/googlecal/rf`,
-            {
-              code: code,
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${accessToken}`,
+
+          const rftUrl = await getGoogleRtfUrlApi();
+
+          if (rftUrl) {
+            return {
+              redirect: {
+                destination: rftUrl,
+                permanent: false,
               },
-            }
-          );
+            };
+          }
+        } else {
+          const getCodeApi = async () => {
+            // console.log(code);
+            const response = await axios.post(
+              `${process.env.SERVER}/googlecal/rf`,
+              {
+                code: code,
+              },
+              {
+                headers: {
+                  Authorization: `Bearer ${accessToken}`,
+                },
+              }
+            );
 
-          console.log(response);
-          // return response.refresh_token;
-        };
+            console.log(response.data.refresh_token);
 
-        googleRft = await getCodeApi();
+            // Store refresh token into user database
+            await axios.put(
+              `${process.env.SERVER}/user/${dbUser.id}`,
+              {
+                rft: response.data.refresh_token,
+              },
+              {
+                headers: {
+                  Authorization: `Bearer ${accessToken}`,
+                },
+              }
+            );
+            // console.log(response);
+            return response.data.refresh_token;
+          };
+
+          userRft = await getCodeApi();
+        }
       }
+
+      console.log("userRft", userRft);
 
       const getGoogleCalendarApi = async () => {
         const sub = currUser.sub.split("|")[0];
         const id = currUser.sub.split("|")[1];
         const response = await axios.get(
-          `${process.env.SERVER}/googleCal/${sub}/${id}`,
+          `${process.env.SERVER}/googleCal/${sub}/${id}/${dbUser.id}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -267,38 +318,30 @@ export const getServerSideProps = withPageAuthRequired({
         return response.data;
       };
 
-      // const getRfUrlApi = async () => {
-      //   const res = await axios.get(`${process.env.SERVER}/rfurl`, {
-      //     headers: {
-      //       Authorization: `Bearer ${accessToken}`,
-      //     },
-      //   });
-
-      //   return res.data;
-      // };
-
-      // if (code) {
-      //   window.localStorage.setItem("GOOGLE_REFRESH_TOKEN", code);
-      // }
-
-      // if (window.localStorage.getItem("GOOGLE_REFRESH_TOKEN")) {
       googleCalList = await getGoogleCalendarApi();
-      // } else {
-      //   console.log("here");
-
-      //   const url = getRfUrlApi();
-      //   window.location.replace(url);
-      //   console.log("here");
-      // }
 
       return {
         props: { googleCalList },
       };
     } catch (error) {
-      console.log(error);
+      console.log("error");
+      const resetRftDb = async () => {
+        await axios.put(
+          `${process.env.SERVER}/user/${dbUser.id}`,
+          {
+            rft: null,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+      };
+      await resetRftDb();
       return {
         redirect: {
-          destination: "/",
+          destination: "/api/auth/logout",
           permanent: false,
         },
       };
