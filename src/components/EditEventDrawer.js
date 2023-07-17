@@ -17,13 +17,17 @@ import {
   FormLabel,
   Heading,
   IconButton,
+  Stat,
+  StatGroup,
+  StatLabel,
+  StatNumber,
   Tag,
   Text,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import CustomFormInput from "./ui/CustomFormInput";
 import CustomFormCheckbox from "./ui/CustomFormCheckbox";
 import CustomSelect from "./ui/CustomSelect";
@@ -32,8 +36,9 @@ import moment from "moment";
 import { eventFormSchema } from "@/formSchema/formSchema";
 import { colorOptions } from "@/contants";
 import axios from "axios";
-import { AccessTokenContext } from "@/pages/home";
+import { AccessTokenContext, UserContext } from "@/pages/home";
 import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
+import Rsvp from "./Rsvp";
 
 export default function EditEventDrawer({
   editEventDrawer,
@@ -45,16 +50,30 @@ export default function EditEventDrawer({
   getEventListApi,
 }) {
   const accessToken = useContext(AccessTokenContext);
+  const currUser = useContext(UserContext);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef();
   const toast = useToast();
+  const [userEvent, setUserEvent] = useState();
+  const [member, setMember] = useState();
+  const [endDate, setEndDate] = useState();
+
+  useEffect(() => {
+    if (selectedEvent) {
+      checkUserIsInEvent();
+      setEndDate(moment(selectedEvent?.end).format("YYYY-MM-DD"));
+    }
+  }, [selectedEvent]);
 
   const handleEditEvent = (values, actions) => {
     // console.log("Edited");
     // console.log(values);
     const newValues = { ...values };
     if (newValues.allDay) {
+      console.log(endDate, moment(newValues.end).format("YYYY-MM-DD"));
+      // if (endDate !== moment(newValues.end).format("YYYY-MM-DD")) {
       newValues.end = moment(newValues.end).add(1, "day").format("YYYY-MM-DD");
+      // }
       newValues.start = moment(newValues.start).format("YYYY-MM-DD");
     }
     editEventApi(selectedEvent?.id, newValues);
@@ -118,6 +137,26 @@ export default function EditEventDrawer({
     return colorOptions[index];
   };
 
+  // get event include user
+  const checkUserIsInEvent = async () => {
+    const eventWithUser = await axios.get(
+      `${process.env.SERVER}/event/userevent/${selectedEvent.id}/${currUser.id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    console.log(eventWithUser.data);
+    setUserEvent(eventWithUser.data);
+    eventWithUser.data === null || eventWithUser.data.roleId === 2
+      ? setMember(true)
+      : setMember(false);
+  };
+
+  // check if user member
+  // allow rsvp, and no edits
+  // update stats
   return (
     // selectedEvent && (
     <>
@@ -129,27 +168,39 @@ export default function EditEventDrawer({
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader display="flex" alignItems="center">
-            Edit Event
-            {/* {selectedEvent?.title} */}
-            <span>
-              <IconButton
-                ml={4}
-                colorScheme="red"
-                variant="ghost"
-                size="sm"
-                aria-label="Delete event"
-                icon={<DeleteIcon />}
-                onClick={onOpen}
-              />
-            </span>
+          <DrawerHeader>
+            <Flex alignItems="center">
+              Edit Event
+              {/* {selectedEvent?.title} */}
+              <span>
+                <IconButton
+                  ml={4}
+                  colorScheme="red"
+                  variant="ghost"
+                  size="sm"
+                  aria-label="Delete event"
+                  icon={<DeleteIcon />}
+                  onClick={onOpen}
+                />
+              </span>
+            </Flex>
+            <Rsvp
+              userEvent={userEvent}
+              member={member}
+              selectedEvent={selectedEvent}
+            />
           </DrawerHeader>
-
           <Formik
             initialValues={{
               title: selectedEvent?.title,
               start: moment(selectedEvent?.start).format("YYYY-MM-DDTHH:mm"),
-              end: selectedEvent?.end
+              end: selectedEvent?.allDay
+                ? selectedEvent?.end
+                  ? moment(selectedEvent?.end)
+                      .subtract(8, "hours")
+                      .format("YYYY-MM-DDTHH:mm")
+                  : null
+                : selectedEvent?.end
                 ? moment(selectedEvent?.end).format("YYYY-MM-DDTHH:mm")
                 : null,
               // startDateTime: moment(selectedEvent.start).format(
@@ -174,15 +225,18 @@ export default function EditEventDrawer({
                     name="title"
                     type="text"
                     placeholder="Enter event title"
+                    isDisabled={member ? true : false}
                   />
                   <CustomFormCheckbox
                     name="allDay"
                     text="All Day"
                     defaultChecked={props.getFieldMeta().value.allDay}
+                    isDisabled={member ? true : false}
                   />
                   <CustomSelect
                     label="Color"
                     name="color"
+                    isDisabled={member ? true : false}
                     options={colorOptions}
                     onChange={(value) =>
                       props.setFieldValue("color", value.value)
@@ -197,6 +251,7 @@ export default function EditEventDrawer({
                     // }}
                   />
                   <CustomFormInput
+                    isDisabled={member ? true : false}
                     label="Starts"
                     // name={
                     //   props.getFieldMeta().value.allDay
@@ -220,6 +275,7 @@ export default function EditEventDrawer({
                     }
                   />
                   <CustomFormInput
+                    isDisabled={member ? true : false}
                     label="Ends"
                     // name={
                     //   props.getFieldMeta().value.allDay
@@ -252,11 +308,13 @@ export default function EditEventDrawer({
                     }
                   />
                   <CustomFormTextarea
+                    isDisabled={member ? true : false}
                     label="Description"
                     name="description"
                     placeholder="(Optional)"
                   />
                   <CustomFormInput
+                    isDisabled={member ? true : false}
                     label="Location"
                     name="location"
                     type="text"

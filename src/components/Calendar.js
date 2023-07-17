@@ -23,9 +23,11 @@ import {
   MenuDivider,
   MenuItem,
   MenuList,
+  Stack,
   Tab,
   TabList,
   Tabs,
+  Text,
   Tooltip,
 } from "@chakra-ui/react";
 import { ArrowLeftIcon, ArrowRightIcon, SettingsIcon } from "@chakra-ui/icons";
@@ -394,7 +396,17 @@ export default function Calendar({
           </Tabs>
         </div>
         <Flex alignItems="center" gap={3} zIndex={999}>
-          <Tooltip label={userLabels}>
+          <Tooltip
+            label={
+              calendarUsers?.length > 0 && (
+                <Stack>
+                  {calendarUsers?.map((user) => (
+                    <Text key={user.id}>{user.name}</Text>
+                  ))}
+                </Stack>
+              )
+            }
+          >
             <AvatarGroup max={3}>
               {calendarUsers &&
                 calendarUsers.map((user) => (
