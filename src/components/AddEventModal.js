@@ -169,6 +169,15 @@ export default function AddEventModal({
                   //     : "endDateTime"
                   // }
                   name="end"
+                  min={
+                    props.getFieldMeta().value.allDay
+                      ? moment(props.getFieldMeta().value.start).format(
+                          "YYYY-MM-DD"
+                        )
+                      : moment(props.getFieldMeta().value.start).format(
+                          "YYYY-MM-DDTHH:mm"
+                        )
+                  }
                   type={
                     props.getFieldMeta().value.allDay
                       ? "date"
