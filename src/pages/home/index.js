@@ -203,6 +203,55 @@ export const getServerSideProps = withPageAuthRequired({
       // const code = context.query.code && context.query.code;
       // console.log(code);
 
+      const code = context.query.code;
+      let googleRft;
+
+      if (!code) {
+        const getGoogleRtfUrlApi = async () => {
+          const response = await axios.get(
+            `${process.env.SERVER}/googlecal/rfurl`,
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            }
+          );
+          console.log(response.data);
+          return response.data;
+        };
+
+        const rftUrl = await getGoogleRtfUrlApi();
+
+        if (rftUrl) {
+          return {
+            redirect: {
+              destination: rftUrl,
+              permanent: false,
+            },
+          };
+        }
+      } else {
+        const getCodeApi = async () => {
+          console.log(code);
+          const response = await axios.post(
+            `${process.env.SERVER}/googlecal/rf`,
+            {
+              code: code,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            }
+          );
+
+          console.log(response);
+          // return response.refresh_token;
+        };
+
+        googleRft = await getCodeApi();
+      }
+
       const getGoogleCalendarApi = async () => {
         const sub = currUser.sub.split("|")[0];
         const id = currUser.sub.split("|")[1];
