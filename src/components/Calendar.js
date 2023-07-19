@@ -7,42 +7,16 @@ import listPlugin from "@fullcalendar/list";
 import interactionPlugin from "@fullcalendar/interaction";
 import moment from "moment";
 import { useState } from "react";
-import {
-  Avatar,
-  AvatarGroup,
-  Button,
-  Flex,
-  IconButton,
-  Menu,
-  MenuButton,
-  MenuDivider,
-  MenuItem,
-  MenuList,
-  Stack,
-  Tab,
-  TabList,
-  Tabs,
-  Text,
-  Tooltip,
-} from "@chakra-ui/react";
-import { ArrowLeftIcon, ArrowRightIcon, SettingsIcon } from "@chakra-ui/icons";
-import {
-  addDays,
-  addMonths,
-  addWeeks,
-  addYears,
-  subDays,
-  subMonths,
-  subWeeks,
-  subYears,
-} from "date-fns";
-import { AccessTokenContext, UserContext } from "../pages/home/index";
+import { Flex } from "@chakra-ui/react";
+import { AccessTokenContext } from "../pages/home/index";
 import axios from "axios";
-import { useRouter } from "next/router";
 import AddEventModal from "./AddEventModal";
 import EditEventDrawer from "./EditEventDrawer";
 import EditCalendarModal from "./EditCalendarModal";
 import InviteMembersModal from "./InviteMembersModal";
+import DateNavigations from "./ui/DateNavigations";
+import CalendarViewsTab from "./ui/CalendarViewsTab";
+import AvatarEventMenu from "./ui/AvatarEventMenu";
 
 const Views = {
   Day: "day",
@@ -71,9 +45,7 @@ export default function Calendar({
   const [inviteMembersModal, setInviteMembersModal] = useState(false);
   const [calendarUsers, setCalendarUsers] = useState([]);
   const today = new Date();
-  const router = useRouter();
   const accessToken = useContext(AccessTokenContext);
-  const currUser = useContext(UserContext);
 
   useEffect(() => {
     if (selectedDate.toLocaleDateString() !== today.toLocaleDateString()) {
@@ -172,119 +144,20 @@ export default function Calendar({
           setSelectedMonth={setSelectedMonth}
           today={today}
         />
-        <div>
-          <Tabs variant="soft-rounded" colorScheme="green" defaultIndex={2}>
-            <TabList>
-              <Tab
-                onClick={() => {
-                  calendarRef.current.getApi().changeView("timeGridDay");
-                  calendarRef.current.getApi().gotoDate(selectedDate);
-                  setSelectedView(Views.Day);
-                }}
-              >
-                Day
-              </Tab>
-              <Tab
-                onClick={() => {
-                  calendarRef.current.getApi().changeView("timeGridWeek");
-                  setSelectedView(Views.Week);
-                  setSelectedMonth(
-                    new Date(
-                      calendarRef.current.calendar.currentData.currentDate
-                    )
-                  );
-                  setSelectedDate(
-                    new Date(
-                      calendarRef.current.calendar.currentData.currentDate
-                    )
-                  );
-                }}
-              >
-                Week
-              </Tab>
-              <Tab
-                onClick={() => {
-                  calendarRef.current.getApi().changeView("dayGridMonth");
-                  setSelectedView(Views.Month);
-                  setSelectedMonth(
-                    new Date(
-                      calendarRef.current.calendar.currentData.currentDate
-                    )
-                  );
-                  setSelectedDate(
-                    new Date(
-                      calendarRef.current.calendar.currentData.currentDate
-                    )
-                  );
-                }}
-              >
-                Month
-              </Tab>
-              <Tab
-                onClick={() => {
-                  calendarRef.current.getApi().changeView("multiMonthYear");
-                  setSelectedView(Views.Year);
-                }}
-              >
-                Year
-              </Tab>
-            </TabList>
-          </Tabs>
-        </div>
-        <Flex alignItems="center" gap={3} zIndex={999}>
-          <Tooltip
-            label={
-              calendarUsers?.length > 0 && (
-                <Stack>
-                  {calendarUsers?.map((user) => (
-                    <Text key={user.id}>{user.name}</Text>
-                  ))}
-                </Stack>
-              )
-            }
-          >
-            <AvatarGroup max={3}>
-              {calendarUsers &&
-                calendarUsers.map((user) => (
-                  <Avatar
-                    key={user.id}
-                    name={user && user.name}
-                    src={user && user.avatarUrl}
-                    bg="teal.500"
-                  />
-                ))}
-            </AvatarGroup>
-          </Tooltip>
-          <Button
-            colorScheme="teal"
-            onClick={() => setAddEventModal((prev) => !prev)}
-          >
-            Add Event
-          </Button>
-          <Menu>
-            <MenuButton
-              as={IconButton}
-              aria-label="Options"
-              icon={<SettingsIcon />}
-              variant="ghost"
-            />
-            <MenuList>
-              <MenuItem onClick={() => router.push(`/profile/${currUser.id}`)}>
-                Profile Setting
-              </MenuItem>
-              <MenuItem onClick={() => setEditCalendarModal((prev) => !prev)}>
-                Calendar Setting
-              </MenuItem>
-              <MenuItem onClick={() => setInviteMembersModal((prev) => !prev)}>
-                Invite Members
-              </MenuItem>
-              <MenuDivider />
-              <MenuItem onClick={() => router.push("/api/auth/logout")}>
-                <p className="text-red-500 font-bold">Logout</p>
-              </MenuItem>
-            </MenuList>
-          </Menu>
-        </Flex>
+        <CalendarViewsTab
+          calendarRef={calendarRef}
+          Views={Views}
+          setSelectedView={setSelectedView}
+          selectedDate={selectedDate}
+          setSelectedMonth={setSelectedMonth}
+          setSelectedDate={setSelectedDate}
+        />
+        <AvatarEventMenu
+          calendarUsers={calendarUsers}
+          setAddEventModal={setAddEventModal}
+          setEditCalendarModal={setEditCalendarModal}
+          setInviteMembersModal={setInviteMembersModal}
+        />
       </Flex>
       <FullCalendar
         ref={calendarRef}
@@ -296,6 +169,7 @@ export default function Calendar({
           listPlugin,
         ]}
         initialView={"dayGridMonth"}
+        headerToolbar={false}
         events={events}
         editable={true}
         eventResizableFromStart={true}
@@ -344,92 +218,3 @@ export default function Calendar({
     </div>
   );
 }
-
-const DateNavigations = ({
-  calendarRef,
-  Views,
-  selectedView,
-  selectedDate,
-  setSelectedDate,
-  setSelectedMonth,
-  today,
-}) => {
-  return (
-    <div>
-      <IconButton
-        variant="ghost"
-        colorScheme="teal"
-        aria-label="Previous"
-        icon={<ArrowLeftIcon />}
-        onClick={() => {
-          calendarRef.current.getApi().prev();
-          if (selectedView === Views.Day) {
-            setSelectedDate((prev) => subDays(prev, 1));
-            setSelectedMonth((prev) => subDays(prev, 1));
-          } else if (selectedView === Views.Week) {
-            setSelectedMonth((prev) => {
-              setSelectedDate(subWeeks(prev, 1));
-              return subWeeks(prev, 1);
-            });
-          } else if (selectedView === Views.Month) {
-            setSelectedMonth((prev) => {
-              setSelectedDate(subMonths(prev, 1));
-              return subMonths(prev, 1);
-            });
-          } else if (selectedView === Views.Year) {
-            setSelectedMonth((prev) => {
-              setSelectedDate(subYears(prev, 1));
-              return subYears(prev, 1);
-            });
-          }
-        }}
-      />
-      <Button
-        variant="ghost"
-        colorScheme="teal"
-        aria-label="Today"
-        isDisabled={
-          today.toLocaleDateString() ===
-          new Date(selectedDate).toLocaleDateString()
-            ? true
-            : false
-        }
-        onClick={() => {
-          calendarRef.current.getApi().today();
-          setSelectedMonth(new Date());
-          setSelectedDate(new Date());
-        }}
-      >
-        Today
-      </Button>
-      <IconButton
-        variant="ghost"
-        colorScheme="teal"
-        aria-label="Next"
-        icon={<ArrowRightIcon />}
-        onClick={() => {
-          calendarRef.current.getApi().next();
-          if (selectedView === Views.Day) {
-            setSelectedDate((prev) => addDays(prev, 1));
-            setSelectedMonth((prev) => addDays(prev, 1));
-          } else if (selectedView === Views.Week) {
-            setSelectedMonth((prev) => {
-              setSelectedDate(addWeeks(prev, 1));
-              return addWeeks(prev, 1);
-            });
-          } else if (selectedView === Views.Month) {
-            setSelectedMonth((prev) => {
-              setSelectedDate(addMonths(prev, 1));
-              return addMonths(prev, 1);
-            });
-          } else if (selectedView === Views.Year) {
-            setSelectedMonth((prev) => {
-              setSelectedDate(addYears(prev, 1));
-              return addYears(prev, 1);
-            });
-          }
-        }}
-      />
-    </div>
-  );
-};
