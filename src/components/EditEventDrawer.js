@@ -17,6 +17,7 @@ import {
   FormLabel,
   Heading,
   IconButton,
+  Input,
   Stat,
   StatGroup,
   StatLabel,
@@ -225,18 +226,18 @@ export default function EditEventDrawer({
                     name="title"
                     type="text"
                     placeholder="Enter event title"
-                    isDisabled={member ? true : false}
+                    isReadOnly={member ? true : false}
                   />
                   <CustomFormCheckbox
                     name="allDay"
                     text="All Day"
                     defaultChecked={props.getFieldMeta().value.allDay}
-                    isDisabled={member ? true : false}
+                    isReadOnly={member ? true : false}
                   />
                   <CustomSelect
                     label="Color"
                     name="color"
-                    isDisabled={member ? true : false}
+                    isReadOnly={member ? true : false}
                     options={colorOptions}
                     onChange={(value) =>
                       props.setFieldValue("color", value.value)
@@ -251,7 +252,7 @@ export default function EditEventDrawer({
                     // }}
                   />
                   <CustomFormInput
-                    isDisabled={member ? true : false}
+                    isReadOnly={member ? true : false}
                     label="Starts"
                     // name={
                     //   props.getFieldMeta().value.allDay
@@ -275,7 +276,7 @@ export default function EditEventDrawer({
                     }
                   />
                   <CustomFormInput
-                    isDisabled={member ? true : false}
+                    isReadOnly={member ? true : false}
                     label="Ends"
                     // name={
                     //   props.getFieldMeta().value.allDay
@@ -308,13 +309,13 @@ export default function EditEventDrawer({
                     }
                   />
                   <CustomFormTextarea
-                    isDisabled={member ? true : false}
+                    isReadOnly={member ? true : false}
                     label="Description"
                     name="description"
                     placeholder="(Optional)"
                   />
                   <CustomFormInput
-                    isDisabled={member ? true : false}
+                    isReadOnly={member ? true : false}
                     label="Location"
                     name="location"
                     type="text"
@@ -328,7 +329,11 @@ export default function EditEventDrawer({
                     >
                       Cancel
                     </Button>
-                    <Button colorScheme="teal" type="submit">
+                    <Button
+                      colorScheme="teal"
+                      type="submit"
+                      isDisabled={member ? true : false}
+                    >
                       Confirm
                     </Button>
                   </Flex>
