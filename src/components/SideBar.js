@@ -12,28 +12,28 @@ export default function Sidebar({
   setSelectedCalendar,
   calendars,
   setCalendars,
-  getGroupsApi,
 }) {
-  // const [calendars, setCalendars] = useState();
   const [addCalendarModal, setAddCalendarModal] = useState(false);
   const accessToken = useContext(AccessTokenContext);
   const currUser = useContext(UserContext);
 
   const handleSelectGroup = (cal) => {
-    console.log(cal);
     setSelectedCalendar(cal);
   };
 
-  // const getGroupsApi = async (userId) => {
-  //   const res = await axios.get(`${process.env.SERVER}/user/group/${userId}`, {
-  //     headers: {
-  //       Authorization: `Bearer ${accessToken}`,
-  //     },
-  //   });
-  //   // console.log(res.data.Calendars);
-  //   setCalendars(res.data.Calendars);
-  //   setSelectedCalendar(res.data.Calendars[0]);
-  // };
+  const getGroupsApi = async (userId, newCalendar) => {
+    const res = await axios.get(`${process.env.SERVER}/user/group/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    setCalendars(res.data.Calendars);
+    if (newCalendar) {
+      setSelectedCalendar(res.data.Calendars[res.data.Calendars.length - 1]);
+    } else {
+      setSelectedCalendar(res.data.Calendars[0]);
+    }
+  };
 
   useEffect(() => {
     currUser && getGroupsApi(currUser.id);
@@ -122,4 +122,3 @@ export default function Sidebar({
     </Box>
   );
 }
-// "bg-fuchsia-300 rounded-xl" : "bg-slate-500 rounded-full transition-all hover:bg-fuchsia-300 hover:rounded-xl hover:cursor-pointer"

@@ -37,9 +37,6 @@ export default function ImportCalendar({
 
   const handleImport = () => {
     handleGoogleEventApi();
-    // Send post requst to API
-    // Get back non duplicated events
-    // Load new events to event state
   };
 
   const handleGoogleEventApi = async () => {
@@ -59,9 +56,6 @@ export default function ImportCalendar({
         },
       }
     );
-    console.log("Imported Events from google", response.data);
-    // const newEvents = [...events, ...response.data];
-    // console.log(newEvents);
     setEvents((prev) => [...prev, ...response.data]);
     setEditCalendarModal(false);
     setIsImporting(false);

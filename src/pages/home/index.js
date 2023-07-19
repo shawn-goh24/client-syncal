@@ -9,8 +9,7 @@ import Sidebar from "@/components/SideBar";
 import InfoBar from "@/components/InfoBar";
 import { Box } from "@chakra-ui/react";
 import Calendar from "@/components/Calendar";
-import axios, { Axios } from "axios";
-import { useRouter } from "next/router";
+import axios from "axios";
 
 export const AccessTokenContext = createContext();
 export const UserContext = createContext();
@@ -25,11 +24,6 @@ export default function index({ googleCalList }) {
   const [calendars, setCalendars] = useState();
   const calendarRef = createRef();
   const [eventList, setEventList] = useState();
-  // const router = useRouter();
-  // const [googleCalList, setGoogleCalList] = useState();
-
-  // console.log(user);
-  // console.log("google cal", googleCalList);
 
   useEffect(() => {
     if (user) {
@@ -55,81 +49,6 @@ export default function index({ googleCalList }) {
     );
     setEventList(res.data);
   };
-
-  const getGroupsApi = async (userId, newCalendar) => {
-    const res = await axios.get(`${process.env.SERVER}/user/group/${userId}`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-    // console.log(res.data.Calendars);
-    setCalendars(res.data.Calendars);
-    if (newCalendar) {
-      setSelectedCalendar(res.data.Calendars[res.data.Calendars.length - 1]);
-    } else {
-      setSelectedCalendar(res.data.Calendars[0]);
-    }
-  };
-
-  // useEffect(() => {
-  //   if (accessToken) {
-  //     const code = router.query.code && router.query.code;
-  //     console.log(code);
-  //     if (code) {
-  //       window.localStorage.setItem("GOOGLE_AUTHORIZATION_CODE", code);
-  //     }
-
-  //     if (window.localStorage.getItem("GOOGLE_AUTHORIZATION_CODE")) {
-  //       getGoogleCalendarApi();
-  //       getGoogleRefreshToken();
-  //     } else {
-  //       getRfUrlApi();
-  //     }
-  //   }
-  // }, [accessToken]);
-
-  // const getGoogleRefreshToken = async () => {
-  //   const response = await axios.post(
-  //     `${process.env.SERVER}/googleCal/rf`,
-  //     {
-  //       code: window.localStorage.getItem("GOOGLE_AUTHORIZATION_CODE"),
-  //     },
-  //     {
-  //       headers: {
-  //         Authorization: `Bearer ${accessToken}`,
-  //       },
-  //     }
-  //   );
-
-  //   console.log("rf: ", response.data);
-  // };
-
-  // const getGoogleCalendarApi = async () => {
-  //   const sub = user.sub.split("|")[0];
-  //   const id = user.sub.split("|")[1];
-  //   const response = await axios.get(
-  //     `${process.env.SERVER}/googleCal/${sub}/${id}`,
-  //     {
-  //       headers: {
-  //         Authorization: `Bearer ${accessToken}`,
-  //       },
-  //     }
-  //   );
-
-  //   setGoogleCalList(response.data);
-  //   // return response.data;
-  // };
-  // const getRfUrlApi = async () => {
-  //   const res = await axios.get(`${process.env.SERVER}/googleCal/rfurl`, {
-  //     headers: {
-  //       Authorization: `Bearer ${accessToken}`,
-  //     },
-  //   });
-
-  //   console.log(res.data);
-  //   window.location.replace(res.data);
-  //   // return res.data;
-  // };
 
   const getUserApi = async (token) => {
     const request = await axios.post(
@@ -160,7 +79,6 @@ export default function index({ googleCalList }) {
               setSelectedCalendar={setSelectedCalendar}
               calendars={calendars}
               setCalendars={setCalendars}
-              getGroupsApi={getGroupsApi}
             />
             <InfoBar
               calendarRef={calendarRef}
@@ -176,10 +94,8 @@ export default function index({ googleCalList }) {
               calendarRef={calendarRef}
               selectedDate={selectedDate}
               setSelectedDate={setSelectedDate}
-              selectedMonth={selectedMonth}
               setSelectedMonth={setSelectedMonth}
               selectedCalendar={selectedCalendar}
-              calendars={calendars}
               setCalendars={setCalendars}
               googleCalList={googleCalList}
               setSelectedCalendar={setSelectedCalendar}
@@ -199,27 +115,11 @@ export const getServerSideProps = withPageAuthRequired({
     const currUser = session?.user;
     let dbUser;
     let googleCalList;
-    // const router = useRouter();
-    // const code = context.query.code && context.query.code;
-    // console.log(code);
     const code = context.query.code;
-    let googleRft;
-    try {
-      /**
-       * 1. Page loads
-       * Check if user login or is already login
-       * 2. Check user RFT from DB
-       * 3a. If exist: check user accessToken
-       * 3b: if doesnt exist: Load RFT and store in DB
-       * 4: If user accessToken expire: load RFT and get new accesstoken
-       * 5: If user accessToken doesnt expire: continue with process
-       */
 
+    try {
       // Check if refresh token exist in db
       const getRftFromDbApi = async () => {
-        console.log("HERE");
-        console.log(currUser);
-        console.log(accessToken);
         const response = await axios.post(
           `${process.env.SERVER}/user`,
           {
@@ -231,16 +131,17 @@ export const getServerSideProps = withPageAuthRequired({
             },
           }
         );
-        console.log("response.data");
         dbUser = response.data;
         return response.data.rft;
       };
-      let userRft = await getRftFromDbApi();
-      console.log(userRft);
 
-      // UPON LOGIN ONLY or NO REFRESH TOKEN
+      // Store user refresh token from db
+      let userRft = await getRftFromDbApi();
+
+      // UPON NO REFRESH TOKEN
       if (!userRft) {
         if (!code) {
+          // Get google url to get google refresh token
           const getGoogleRtfUrlApi = async () => {
             const response = await axios.get(
               `${process.env.SERVER}/googlecal/rfurl`,
@@ -256,6 +157,7 @@ export const getServerSideProps = withPageAuthRequired({
 
           const rftUrl = await getGoogleRtfUrlApi();
 
+          // once got url, redirect to google auth
           if (rftUrl) {
             return {
               redirect: {
@@ -265,8 +167,8 @@ export const getServerSideProps = withPageAuthRequired({
             };
           }
         } else {
-          const getCodeApi = async () => {
-            // console.log(code);
+          const getGoogleRfApi = async () => {
+            // Get refresh token from google
             const response = await axios.post(
               `${process.env.SERVER}/googlecal/rf`,
               {
@@ -278,8 +180,6 @@ export const getServerSideProps = withPageAuthRequired({
                 },
               }
             );
-
-            console.log(response.data.refresh_token);
 
             // Store refresh token into user database
             await axios.put(
@@ -293,15 +193,13 @@ export const getServerSideProps = withPageAuthRequired({
                 },
               }
             );
-            // console.log(response);
+
             return response.data.refresh_token;
           };
 
-          userRft = await getCodeApi();
+          userRft = await getGoogleRfApi();
         }
       }
-
-      console.log("userRft", userRft);
 
       const getGoogleCalendarApi = async () => {
         const sub = currUser.sub.split("|")[0];
@@ -324,7 +222,6 @@ export const getServerSideProps = withPageAuthRequired({
         props: { googleCalList },
       };
     } catch (error) {
-      console.log("error");
       const resetRftDb = async () => {
         await axios.put(
           `${process.env.SERVER}/user/${dbUser.id}`,
@@ -339,6 +236,7 @@ export const getServerSideProps = withPageAuthRequired({
         );
       };
       await resetRftDb();
+
       return {
         redirect: {
           destination: "/api/auth/logout",

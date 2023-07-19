@@ -2,22 +2,18 @@ import { AccessTokenContext, UserContext } from "@/pages/home";
 import { EditIcon } from "@chakra-ui/icons";
 import {
   ButtonGroup,
-  Stat,
   StatGroup,
-  StatLabel,
-  StatNumber,
-  Button,
   Tag,
   Flex,
   IconButton,
-  Tooltip,
-  Stack,
-  Text,
 } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
+import RsvpStats from "./ui/RsvpStats";
+import { rsvps } from "@/constants";
+import RsvpButtons from "./ui/RsvpButtons";
 
-export default function Rsvp({ userEvent, member, selectedEvent }) {
+export default function Rsvp({ userEvent, selectedEvent }) {
   const [isRsvped, setIsRsvped] = useState(userEvent === null ? true : false);
   const [eventWithUser, setEventWithUser] = useState(
     userEvent ? userEvent : ""
@@ -30,7 +26,6 @@ export default function Rsvp({ userEvent, member, selectedEvent }) {
   useEffect(() => {
     setIsRsvped(userEvent === null ? true : false);
     setEventWithUser(userEvent ? userEvent : "");
-    console.log(userEvent);
     getRsvpCount();
     getUsersInEvent();
   }, [userEvent]);
@@ -47,8 +42,6 @@ export default function Rsvp({ userEvent, member, selectedEvent }) {
         },
       }
     );
-    console.log("response data", response.data);
-    // console.log("userevent", eventWithUser);
     setEventWithUser(response.data);
     getRsvpCount();
     getUsersInEvent();
@@ -64,7 +57,6 @@ export default function Rsvp({ userEvent, member, selectedEvent }) {
       }
     );
 
-    console.log(rsvpCount.data);
     setRsvpCounts(rsvpCount.data);
   };
 
@@ -78,120 +70,51 @@ export default function Rsvp({ userEvent, member, selectedEvent }) {
       }
     );
 
-    console.log(usersInEvent.data.Users);
-    const obj = { yes: [], no: [], maybe: [] };
-    const tmp = usersInEvent.data.Users;
-    tmp.map((item) => {
+    const rsvpObj = { Yes: [], No: [], Maybe: [] };
+    const usersArray = usersInEvent.data.Users;
+    usersArray.map((item) => {
       if (item.UserEvent.rsvpId === 1) {
-        obj.yes.push(item.name);
+        rsvpObj.Yes.push(item.name);
       } else if (item.UserEvent.rsvpId === 2) {
-        obj.no.push(item.name);
+        rsvpObj.No.push(item.name);
       } else {
-        obj.maybe.push(item.name);
+        rsvpObj.Maybe.push(item.name);
       }
     });
-    console.log(obj);
-    setRsvpNames(obj);
+    setRsvpNames(rsvpObj);
   };
 
-  const handleYes = () => {
-    console.log("Yes");
-    // Update userEvents rsvp number to 1
-    editUserEventApi(1);
-    setIsRsvped((prev) => !prev);
-  };
-  const handleNo = () => {
-    console.log("No");
-    // Update userEvents rsvp number to 2
-    editUserEventApi(2);
-    setIsRsvped((prev) => !prev);
-  };
-  const handleMaybe = () => {
-    console.log("Maybe");
-    // Update userEvents rsvp number to 3
-    editUserEventApi(3);
+  const handleClick = (rsvp) => {
+    editUserEventApi(rsvps.indexOf(rsvp) + 1);
     setIsRsvped((prev) => !prev);
   };
 
   const rsvpChip = (rsvpId) => {
-    if (rsvpId === 1)
-      return (
-        <Tag size="md" colorScheme="teal">
-          Yes
-        </Tag>
-      );
-    else if (rsvpId === 2)
-      return (
-        <Tag size="md" colorScheme="red">
-          No
-        </Tag>
-      );
-    else if (rsvpId === 3) return <Tag size="md">Maybe</Tag>;
+    const colorScheme = ["teal", "red", ""];
+    return (
+      <Tag size="md" colorScheme={colorScheme[[rsvpId - 1]]}>
+        {rsvps[rsvpId - 1]}
+      </Tag>
+    );
   };
 
   return (
     <>
       <StatGroup>
-        <Tooltip
-          label={
-            rsvpNames?.yes?.length > 0 && (
-              <Stack>
-                {rsvpNames?.yes?.map((item) => (
-                  <Text key={item}>{item}</Text>
-                ))}
-              </Stack>
-            )
-          }
-        >
-          <Stat>
-            <StatLabel>Yes</StatLabel>
-            <StatNumber>{rsvpCounts.yes}</StatNumber>
-          </Stat>
-        </Tooltip>
-        <Tooltip
-          label={
-            rsvpNames?.no?.length > 0 && (
-              <Stack>
-                {rsvpNames?.no?.map((item) => (
-                  <Text key={item}>{item}</Text>
-                ))}
-              </Stack>
-            )
-          }
-        >
-          <Stat>
-            <StatLabel>No</StatLabel>
-            <StatNumber>{rsvpCounts.no}</StatNumber>
-          </Stat>
-        </Tooltip>
-        <Tooltip
-          label={
-            rsvpNames?.maybe?.length > 0 && (
-              <Stack>
-                {rsvpNames?.maybe?.map((item) => (
-                  <Text key={item}>{item}</Text>
-                ))}
-              </Stack>
-            )
-          }
-        >
-          <Stat>
-            <StatLabel>Maybe</StatLabel>
-            <StatNumber>{rsvpCounts.maybe}</StatNumber>
-          </Stat>
-        </Tooltip>
+        {rsvps.map((rsvp) => (
+          <RsvpStats
+            key={rsvp}
+            rsvp={rsvp}
+            rsvpCounts={rsvpCounts}
+            rsvpNames={rsvpNames}
+          />
+        ))}
       </StatGroup>
       {isRsvped ? (
         <ButtonGroup display={isRsvped ? "block" : "none"}>
-          <Button size="sm" onClick={handleYes}>
-            Yes
-          </Button>
-          <Button size="sm" onClick={handleNo}>
-            No
-          </Button>
-          <Button size="sm" onClick={handleMaybe}>
-            Maybe
-          </Button>
+          {rsvps.map((rsvp) => (
+            <RsvpButtons key={rsvp} rsvp={rsvp} handleClick={handleClick} />
+          ))}
         </ButtonGroup>
       ) : (
         <Flex>

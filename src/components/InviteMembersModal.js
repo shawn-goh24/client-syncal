@@ -64,7 +64,6 @@ export default function InviteMembersModal({
         },
       }
     );
-    console.log(res.data);
   };
 
   const addToPendingApi = async () => {
@@ -79,7 +78,6 @@ export default function InviteMembersModal({
         },
       }
     );
-    console.log(res.data);
     handleClose();
   };
 

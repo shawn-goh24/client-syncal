@@ -1,18 +1,9 @@
 import {
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogOverlay,
   Avatar,
   Box,
   Button,
   Center,
-  Checkbox,
-  Flex,
   FormLabel,
-  Input,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -20,10 +11,6 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  StackDivider,
-  Switch,
-  Text,
-  VStack,
   useToast,
 } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
@@ -35,68 +22,13 @@ import { storage } from "../../firebase";
 import axios from "axios";
 import { calendarFormSchema } from "@/formSchema/calendarFormSchema";
 import { AccessTokenContext, UserContext } from "@/pages/home";
-import {
-  getAccessToken,
-  getSession,
-  withPageAuthRequired,
-} from "@auth0/nextjs-auth0";
-import { useUser } from "@auth0/nextjs-auth0/client";
 import ImportCalendar from "./ImportCalendar";
-import { colorOptions } from "@/contants";
+import { colorOptions } from "@/constants";
 import Select from "react-select";
-import chroma from "chroma-js";
-
-const dot = (color = "transparent") => ({
-  alignItems: "center",
-  display: "flex",
-
-  ":before": {
-    backgroundColor: color,
-    borderRadius: 10,
-    content: '" "',
-    display: "block",
-    marginRight: 8,
-    height: 10,
-    width: 10,
-  },
-});
-
-const colourStyles = {
-  control: (styles) => ({ ...styles, backgroundColor: "white" }),
-  option: (styles, { data, isDisabled, isFocused, isSelected }) => {
-    const color = chroma(data.value);
-    return {
-      ...styles,
-      backgroundColor: isDisabled
-        ? undefined
-        : isSelected
-        ? data.value
-        : isFocused
-        ? color.alpha(0.1).css()
-        : undefined,
-      color: isDisabled
-        ? "#ccc"
-        : isSelected
-        ? chroma.contrast(color, "white") > 2
-          ? "white"
-          : "black"
-        : data.value,
-      cursor: isDisabled ? "not-allowed" : "default",
-
-      ":active": {
-        ...styles[":active"],
-        backgroundColor: !isDisabled
-          ? isSelected
-            ? data.value
-            : color.alpha(0.3).css()
-          : undefined,
-      },
-    };
-  },
-  input: (styles) => ({ ...styles, ...dot() }),
-  placeholder: (styles) => ({ ...styles, ...dot("#ccc") }),
-  singleValue: (styles, { data }) => ({ ...styles, ...dot(data.value) }),
-};
+import { colourStyles } from "@/constants";
+import { defaultColorValue } from "@/utils/utils";
+import DeleteCalendarAlert from "./DeleteCalendarAlert";
+import LeaveCalendarAlert from "./LeaveCalendarAlert";
 
 export default function EditCalendarModal({
   editCalendarModal,
@@ -117,8 +49,6 @@ export default function EditCalendarModal({
   const [isMember, setIsMember] = useState(false);
   const accessToken = useContext(AccessTokenContext);
   const currUser = useContext(UserContext);
-  const cancelRef = useRef();
-  const leaveCancelRef = useRef();
   const toast = useToast();
 
   useEffect(() => {
@@ -149,7 +79,6 @@ export default function EditCalendarModal({
       }
     );
 
-    // console.log(response.data.Calendars);
     setCalendars(response.data.Calendars);
     setEditCalendarModal((prev) => !prev);
     toast({
@@ -191,7 +120,7 @@ export default function EditCalendarModal({
         },
       }
     );
-    // console.log(res.data.Users[0].UserCalendar.roleId);
+
     res.data && res.data.Users[0].UserCalendar.roleId === 2
       ? setIsMember(true)
       : setIsMember(false);
@@ -240,15 +169,7 @@ export default function EditCalendarModal({
     setLeaveAlertDialog(false);
   };
 
-  const defaultColorValue = (options, value) =>
-    options
-      ? options.find((option) => {
-          return option.value === value;
-        })
-      : "";
-
   const changeDefaultColor = (selectedColor) => {
-    // console.log("changeDefaultColor", selectedColor);
     const changeColorApi = async () => {
       const response = await axios.put(
         `${process.env.SERVER}/usercalendar/editcolor/${currUser.id}/${selectedCalendar.id}`,
@@ -261,12 +182,11 @@ export default function EditCalendarModal({
           },
         }
       );
-      console.log(response.data);
+
       setSelectedCalendar((prev) => ({ ...prev, UserCalendar: response.data }));
     };
     changeColorApi();
   };
-  // console.log("Google Cal List: ", googleCalList);
 
   return (
     <>
@@ -336,13 +256,6 @@ export default function EditCalendarModal({
                 )
               }
               onChange={changeDefaultColor}
-              // value={props.values.color}
-              // defaultValue={() => {
-              //   const index = colorOptions.findIndex(
-              //     (color) => color.value == selectedEvent?.backgroundColor
-              //   );
-              //   return colorOptions[index];
-              // }}
               styles={colourStyles}
             />
             <ImportCalendar
@@ -384,80 +297,22 @@ export default function EditCalendarModal({
           </ModalFooter>
         </ModalContent>
       </Modal>
-      <AlertDialog
-        isOpen={alertDialog}
-        leastDestructiveRef={cancelRef}
-        onClose={() => {
-          setAlertDialog((prev) => !prev);
-          setIsDeleteInvalid(false);
-        }}
-      >
-        <AlertDialogOverlay>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              Delete {selectedCalendar?.name}
-            </AlertDialogHeader>
-            <AlertDialogBody>
-              <FormLabel>
-                To confirm, type "{selectedCalendar?.name}" in the box below
-              </FormLabel>
-              <Input
-                isInvalid={isDeleteInvalid}
-                errorBorderColor="crimson"
-                type="text"
-                value={deleteInput}
-                onChange={(e) => setDeleteInput(e.target.value)}
-              />
-              {isDeleteInvalid && (
-                <Text color="red">Please enter the right calendar name</Text>
-              )}
-            </AlertDialogBody>
-            <AlertDialogFooter>
-              <Button
-                ref={cancelRef}
-                onClick={() => {
-                  setAlertDialog((prev) => !prev);
-                  setIsDeleteInvalid(false);
-                }}
-              >
-                Cancel
-              </Button>
-              <Button colorScheme="red" onClick={handleDeleteCalendar} ml={3}>
-                Delete
-              </Button>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialogOverlay>
-      </AlertDialog>
-      <AlertDialog
-        isOpen={leaveAlertDialog}
-        leastDestructiveRef={leaveCancelRef}
-        onClose={() => {
-          setLeaveAlertDialog((prev) => !prev);
-        }}
-      >
-        <AlertDialogOverlay>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              Delete {selectedCalendar?.name}
-            </AlertDialogHeader>
-            <AlertDialogBody>Are you sure you want to leave?</AlertDialogBody>
-            <AlertDialogFooter>
-              <Button
-                ref={leaveCancelRef}
-                onClick={() => {
-                  setLeaveAlertDialog((prev) => !prev);
-                }}
-              >
-                Cancel
-              </Button>
-              <Button colorScheme="red" onClick={handleLeaveCalendar} ml={3}>
-                Confirm
-              </Button>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialogOverlay>
-      </AlertDialog>
+      <DeleteCalendarAlert
+        alertDialog={alertDialog}
+        setAlertDialog={setAlertDialog}
+        setIsDeleteInvalid={setIsDeleteInvalid}
+        selectedCalendar={selectedCalendar}
+        isDeleteInvalid={isDeleteInvalid}
+        deleteInput={deleteInput}
+        setDeleteInput={setDeleteInput}
+        handleDeleteCalendar={handleDeleteCalendar}
+      />
+      <LeaveCalendarAlert
+        leaveAlertDialog={leaveAlertDialog}
+        setLeaveAlertDialog={setLeaveAlertDialog}
+        selectedCalendar={selectedCalendar}
+        handleLeaveCalendar={handleLeaveCalendar}
+      />
     </>
   );
 }
