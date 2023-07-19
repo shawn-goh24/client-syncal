@@ -1,15 +1,11 @@
-import { Inter } from "next/font/google";
 import NavigationBar from "@/components/NavigationBar";
 import { Box, Button, Center, Flex, Heading, Text } from "@chakra-ui/react";
-import Image from "next/image";
 import homeImage from "../assets/home.png";
 import addEvent from "../assets/addEvent.png";
 import calendar from "../assets/calendar.png";
 import FeatureComponent from "@/components/ui/FeatureComponent";
 import { useState } from "react";
 import { getSession } from "@auth0/nextjs-auth0";
-
-const inter = Inter({ subsets: ["latin"] });
 
 const images = [addEvent, homeImage, calendar];
 const imagesText = [
