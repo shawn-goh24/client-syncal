@@ -29,7 +29,9 @@ body {
 .group-button {
   background-color: gray;
   border-radius: 100%;
-  transition: border-radius 100ms linear, background-color 100ms linear;
+  transition:
+    border-radius 100ms linear,
+    background-color 100ms linear;
   height: 100%;
   width: 100%;
 }

@@ -133,7 +133,7 @@ export default function Calendar({
   };
 
   return (
-    <div style={{ width: "100%", padding: "0 20px 0 0" }}>
+    <div className="bg-slate-50 w-full pr-1">
       <Flex justifyContent="space-between" alignItems="center" paddingY="12px">
         <DateNavigations
           calendarRef={calendarRef}
@@ -179,7 +179,7 @@ export default function Calendar({
         dayMaxEvents={true}
         selectable={true}
         select={handleSelectSlots}
-        height={"80vh"}
+        height={"92vh"}
         eventClick={handleEventClick}
       />
       <AddEventModal

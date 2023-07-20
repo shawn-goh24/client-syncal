@@ -28,7 +28,10 @@ export default function InfoBar({
   }, [selectedCalendar]);
 
   return (
-    <div style={{ width: "300px", maxHeight: "100vh" }}>
+    <div
+      style={{ width: "300px", maxHeight: "100vh" }}
+      className="bg-gradient-to-t from-slate-100 to-slate-50"
+    >
       <MiniCalendar
         calendarRef={calendarRef}
         setSelectedDate={setSelectedDate}

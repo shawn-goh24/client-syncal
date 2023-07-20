@@ -40,7 +40,7 @@ export default function Sidebar({
   }, [currUser]);
 
   return (
-    <Box bg="blue.100" width="100px" minHeight="100vh">
+    <Box className="w-24 min-h-screen bg-gradient-to-t from-slate-100 to-slate-50 border-solid border-r-2 border-gray-300">
       <Center py="10px">
         <Image src={syncalLogo} alt="Syncal Logo" width={50} height={50} />
       </Center>
@@ -48,14 +48,16 @@ export default function Sidebar({
       <Center flexDirection="column">
         {calendars &&
           calendars.map((calendar, id) => (
-            <Box
-              width="100%"
-              pl="15px"
-              key={calendar.id}
-              style={{ position: "relative" }}
-            >
+            <Box key={calendar.id} className="my-1.5 relative">
+              <div
+                className={
+                  selectedCalendar.id === calendar.id
+                    ? "block absolute -inset-0.5 my-0 bg-teal-600 rounded-lg blur opacity-75"
+                    : "hidden"
+                }
+              />
               <Tooltip hasArrow label={calendar.name} placement="right">
-                <Box boxSize="50px" my="6px">
+                <Center boxSize="50px" className="relative">
                   {calendar.imageUrl ? (
                     <Image
                       className={
@@ -84,22 +86,8 @@ export default function Sidebar({
                       </p>
                     </Center>
                   )}
-                </Box>
+                </Center>
               </Tooltip>
-              <div
-                className={
-                  selectedCalendar.id === calendar.id ? "block" : "hidden"
-                }
-                style={{
-                  width: "5px",
-                  height: "50px",
-                  backgroundColor: "red",
-                  position: "absolute",
-                  borderRadius: "5px 0px 0px 5px",
-                  top: 6,
-                  right: 0,
-                }}
-              />
             </Box>
           ))}
       </Center>

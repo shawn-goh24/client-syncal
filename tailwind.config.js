@@ -17,7 +17,7 @@ module.exports = {
         "off-white": "#FAF4F4",
         "grayish-cyan": "#F3FBFB",
         "pale-blue": "#BAE8E8",
-        sunny: "FFD803",
+        sunny: "#FFD803",
         navy: "#272343",
       },
     },
