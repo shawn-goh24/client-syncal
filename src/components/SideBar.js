@@ -1,6 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
 import syncalLogo from "../assets/syncal-logo.svg";
-import { Box, Center, IconButton, Tooltip } from "@chakra-ui/react";
+import {
+  Box,
+  Center,
+  IconButton,
+  Tooltip,
+  useMediaQuery,
+} from "@chakra-ui/react";
 import Image from "next/image";
 import { AccessTokenContext, UserContext } from "@/pages/home";
 import axios from "axios";
@@ -16,6 +22,7 @@ export default function Sidebar({
   const [addCalendarModal, setAddCalendarModal] = useState(false);
   const accessToken = useContext(AccessTokenContext);
   const currUser = useContext(UserContext);
+  const [isPhoneSize] = useMediaQuery("(max-width: 500px)");
 
   const handleSelectGroup = (cal) => {
     setSelectedCalendar(cal);
@@ -40,7 +47,13 @@ export default function Sidebar({
   }, [currUser]);
 
   return (
-    <Box className="w-24 min-h-screen bg-gradient-to-t from-slate-100 to-slate-50 border-solid border-r-2 border-gray-300">
+    <Box
+      className={
+        isPhoneSize
+          ? `w-12 min-h-screen bg-gradient-to-t from-slate-200 to-slate-50 border-solid border-r-2 border-gray-300`
+          : `w-24 min-h-screen bg-gradient-to-t from-slate-200 to-slate-50 border-solid border-r-2 border-gray-300`
+      }
+    >
       <Center py="10px">
         <Image src={syncalLogo} alt="Syncal Logo" width={50} height={50} />
       </Center>
@@ -48,7 +61,10 @@ export default function Sidebar({
       <Center flexDirection="column">
         {calendars &&
           calendars.map((calendar, id) => (
-            <Box key={calendar.id} className="my-1.5 relative">
+            <Box
+              key={calendar.id}
+              className={isPhoneSize ? "my-1 relative" : `my-1.5 relative`}
+            >
               <div
                 className={
                   selectedCalendar.id === calendar.id
@@ -57,7 +73,10 @@ export default function Sidebar({
                 }
               />
               <Tooltip hasArrow label={calendar.name} placement="right">
-                <Center boxSize="50px" className="relative">
+                <Center
+                  boxSize={isPhoneSize ? "35" : "50"}
+                  className="relative"
+                >
                   {calendar.imageUrl ? (
                     <Image
                       className={
@@ -65,15 +84,15 @@ export default function Sidebar({
                           ? "group-button-active"
                           : "group-button"
                       }
-                      width="50"
-                      height="50"
+                      width={isPhoneSize ? "35" : "50"}
+                      height={isPhoneSize ? "35" : "50"}
                       src={calendar.imageUrl}
                       alt={calendar.name}
                       onClick={() => handleSelectGroup(calendar)}
                     />
                   ) : (
                     <Center
-                      boxSize="50px"
+                      boxSize={isPhoneSize ? "35px" : "50px"}
                       className={
                         selectedCalendar.id === calendar.id
                           ? "group-button-active"
@@ -93,9 +112,9 @@ export default function Sidebar({
       </Center>
       <Center my="6px">
         <IconButton
+          size={isPhoneSize ? "sm" : "lg"}
           colorScheme="teal"
           aria-label="New calendar"
-          size="lg"
           isRound
           icon={<AddIcon />}
           onClick={() => setAddCalendarModal((prev) => !prev)}

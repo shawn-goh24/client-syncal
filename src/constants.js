@@ -66,3 +66,10 @@ export const colourStyles = {
 };
 
 export const rsvps = ["Yes", "No", "Maybe"];
+
+export const Views = {
+  Day: "day",
+  Week: "week",
+  Month: "month",
+  Year: "year",
+};

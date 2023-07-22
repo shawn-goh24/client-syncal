@@ -14,6 +14,7 @@ import {
   Stack,
   Text,
   Tooltip,
+  useMediaQuery,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import React, { useContext } from "react";
@@ -24,6 +25,7 @@ export default function AvatarEventMenu({
   setEditCalendarModal,
   setInviteMembersModal,
 }) {
+  const [isPhoneSize] = useMediaQuery("(max-width: 500px)");
   const currUser = useContext(UserContext);
 
   const router = useRouter();
@@ -44,6 +46,7 @@ export default function AvatarEventMenu({
           {calendarUsers &&
             calendarUsers.map((user) => (
               <Avatar
+                size={isPhoneSize ? "sm" : "md"}
                 key={user.id}
                 name={user && user.name}
                 src={user && user.avatarUrl}
@@ -53,6 +56,7 @@ export default function AvatarEventMenu({
         </AvatarGroup>
       </Tooltip>
       <Button
+        size={isPhoneSize ? "sm" : "md"}
         colorScheme="teal"
         onClick={() => setAddEventModal((prev) => !prev)}
       >
@@ -60,6 +64,7 @@ export default function AvatarEventMenu({
       </Button>
       <Menu>
         <MenuButton
+          size={isPhoneSize ? "sm" : "md"}
           as={IconButton}
           aria-label="Options"
           icon={<SettingsIcon />}

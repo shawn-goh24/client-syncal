@@ -109,11 +109,12 @@ export default function AddEventModal({
                   name="title"
                   type="text"
                   placeholder="Enter event title"
+                  className="mb-4"
                 />
-                <CustomFormCheckbox name="allDay" text="All Day" />
                 <CustomSelect
                   label="Color"
                   name="color"
+                  className="mb-4"
                   options={colorOptions}
                   onChange={(value) =>
                     props.setFieldValue("color", value.value)
@@ -121,9 +122,15 @@ export default function AddEventModal({
                   value={props.values.color}
                   defaultValue={colorOptions[0]}
                 />
+                <CustomFormCheckbox
+                  name="allDay"
+                  text="All Day"
+                  className="mb-4"
+                />
                 <CustomFormInput
                   label="Starts"
                   name="start"
+                  className="mb-4"
                   type={
                     props.getFieldMeta().value.allDay
                       ? "date"
@@ -142,6 +149,7 @@ export default function AddEventModal({
                 <CustomFormInput
                   label="Ends"
                   name="end"
+                  className="mb-4"
                   min={
                     props.getFieldMeta().value.allDay
                       ? moment(props.getFieldMeta().value.start).format(
@@ -170,6 +178,7 @@ export default function AddEventModal({
                   label="Description"
                   name="description"
                   placeholder="(Optional)"
+                  className="mb-4"
                 />
                 <CustomFormInput
                   label="Location"

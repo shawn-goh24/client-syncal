@@ -12,7 +12,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import CustomFormInput from "./ui/CustomFormInput";
 import CustomFormCheckbox from "./ui/CustomFormCheckbox";
 import CustomSelect from "./ui/CustomSelect";
@@ -38,7 +38,6 @@ export default function EditEventDrawer({
   const accessToken = useContext(AccessTokenContext);
   const currUser = useContext(UserContext);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const cancelRef = useRef();
   const toast = useToast();
   const [userEvent, setUserEvent] = useState();
   const [member, setMember] = useState();
@@ -54,7 +53,6 @@ export default function EditEventDrawer({
   const handleEditEvent = (values, actions) => {
     const newValues = { ...values };
     if (newValues.allDay) {
-      console.log(endDate, moment(newValues.end).format("YYYY-MM-DD"));
       newValues.end = moment(newValues.end).add(1, "day").format("YYYY-MM-DD");
       newValues.start = moment(newValues.start).format("YYYY-MM-DD");
     }
@@ -177,8 +175,8 @@ export default function EditEventDrawer({
                 ? moment(selectedEvent?.end).format("YYYY-MM-DDTHH:mm")
                 : null,
               color: getColor()?.value, // need utils function to get the color
-              description: selectedEvent?.description,
-              location: selectedEvent?.location,
+              description: selectedEvent?.extendedProps.description,
+              location: selectedEvent?.extendedProps.location,
               allDay: selectedEvent?.allDay,
             }}
             validationSchema={eventFormSchema}
@@ -191,8 +189,20 @@ export default function EditEventDrawer({
                     label="Title*"
                     name="title"
                     type="text"
+                    className="mb-4"
                     placeholder="Enter event title"
                     isReadOnly={member ? true : false}
+                  />
+                  <CustomSelect
+                    label="Color"
+                    name="color"
+                    isDisabled={member ? true : false}
+                    options={colorOptions}
+                    className="mb-4"
+                    onChange={(value) =>
+                      props.setFieldValue("color", value.value)
+                    }
+                    value={props.values.color}
                   />
                   <CustomFormCheckbox
                     name="allDay"
@@ -200,20 +210,11 @@ export default function EditEventDrawer({
                     defaultChecked={props.getFieldMeta().value.allDay}
                     isReadOnly={member ? true : false}
                   />
-                  <CustomSelect
-                    label="Color"
-                    name="color"
-                    isReadOnly={member ? true : false}
-                    options={colorOptions}
-                    onChange={(value) =>
-                      props.setFieldValue("color", value.value)
-                    }
-                    value={props.values.color}
-                  />
                   <CustomFormInput
                     isReadOnly={member ? true : false}
                     label="Starts"
                     name="start"
+                    className="mb-4"
                     type={
                       props.getFieldMeta().value.allDay
                         ? "date"
@@ -233,6 +234,7 @@ export default function EditEventDrawer({
                     isReadOnly={member ? true : false}
                     label="Ends"
                     name="end"
+                    className="mb-4"
                     min={
                       props.getFieldMeta().value.allDay
                         ? moment(props.getFieldMeta().value.start).format(

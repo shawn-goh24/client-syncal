@@ -1,4 +1,3 @@
-import { AccessTokenContext } from "@/pages/home";
 import {
   getAccessToken,
   getSession,
@@ -119,8 +118,14 @@ export default function index({ user, accessToken }) {
         maxW="container.xl"
         className="w-full h-16 rounded-2xl bg-slate-50 shadow-lg shadow-slate-500 flex items-center justify-between"
       >
-        <Box>Logo</Box>
-        <Button onClick={() => router.push("/api/auth/logout")}>Logout</Button>
+        <Box className="font-black text-2xl p-4">synCal</Box>
+        <Button
+          variant="ghost"
+          colorScheme="red"
+          onClick={() => router.push("/api/auth/logout")}
+        >
+          Logout
+        </Button>
       </Container>
       <Container maxW="container.xl" className="flex mt-12 mb-3">
         <Text as="button" color="blue.500" onClick={returnHome}>
@@ -205,7 +210,7 @@ export default function index({ user, accessToken }) {
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                     />
-                    <Button colorScheme="teal" onClick={handleSave}>
+                    <Button mx={2} colorScheme="teal" onClick={handleSave}>
                       Save
                     </Button>
                     <Button
@@ -266,19 +271,18 @@ export const getServerSideProps = withPageAuthRequired({
       };
 
       const user = await getUserApi();
-      console.log(user);
 
       return {
         props: { user, accessToken },
       };
     } catch (error) {
       console.log(error);
-      // return {
-      //   redirect: {
-      //     destination: "/error",
-      //     permanent: false,
-      //   },
-      // };
+      return {
+        redirect: {
+          destination: "/error",
+          permanent: false,
+        },
+      };
     }
   },
 });

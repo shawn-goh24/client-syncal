@@ -50,9 +50,14 @@ body {
 }
 
 .rdp-day_today:not(.rdp-day_outside) {
-  color: red;
+  color: teal;
 }
 
 .rdp-row:has(.rdp-day_selected) {
-  background-color: lightgray;
+  background-color: #d8ebe3;
+}
+
+.rdp-row .rdp-cell .rdp-day_selected {
+  background-color: teal;
+  color: whitesmoke;
 }

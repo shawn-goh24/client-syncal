@@ -199,7 +199,7 @@ export default function EditCalendarModal({
           <ModalHeader>Calendar Settings</ModalHeader>
           <ModalCloseButton />
           <Center>
-            <Box as="label" style={{ position: "relative" }}>
+            <Box as="label" className="relative">
               <input
                 name="imageUrl"
                 hidden
@@ -207,11 +207,9 @@ export default function EditCalendarModal({
                 type="file"
                 onChange={uploadCalendarImage}
               />
-              <Box>
+              <Box className="hover:cursor-pointer">
                 <Avatar src={calendarImageUrl} size="2xl" />
-                <CameraIcon
-                  style={{ position: "absolute", right: 0, bottom: 0 }}
-                />
+                <CameraIcon className="absolute bottom-0 right-0" />
               </Box>
             </Box>
           </Center>
@@ -229,6 +227,7 @@ export default function EditCalendarModal({
                     <Button
                       type="submit"
                       colorScheme="teal"
+                      ml={2}
                       isDisabled={
                         props.getFieldMeta().initialValue.name ===
                           props.getFieldMeta().value.name &&
@@ -237,7 +236,7 @@ export default function EditCalendarModal({
                           : false
                       }
                     >
-                      Rename
+                      Save
                     </Button>
                   </Box>
                   <br />
@@ -248,6 +247,7 @@ export default function EditCalendarModal({
             <Select
               name="color"
               options={colorOptions}
+              className="mb-8"
               defaultValue={
                 selectedCalendar &&
                 defaultColorValue(

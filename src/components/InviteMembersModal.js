@@ -24,7 +24,7 @@ export default function InviteMembersModal({
   setInviteMembersModal,
   selectedCalendar,
 }) {
-  const [email, setEmail] = useState();
+  const [email, setEmail] = useState("");
   const [invitedEmails, setInvitedEmails] = useState([]);
   const accessToken = useContext(AccessTokenContext);
   const currUser = useContext(UserContext);
@@ -98,14 +98,14 @@ export default function InviteMembersModal({
             />
             <Button type="submit">Add</Button>
           </Flex>
-          <Wrap>
+          <Wrap className="mt-3">
             {invitedEmails?.map((item) => (
               <Tag
                 size="md"
                 key={item.email}
                 borderRadius="full"
                 variant="solid"
-                colorScheme="green"
+                colorScheme="teal"
               >
                 <TagLabel>{item.email}</TagLabel>
                 <TagCloseButton />
@@ -114,7 +114,7 @@ export default function InviteMembersModal({
           </Wrap>
         </ModalBody>
         <ModalFooter>
-          <Button variant="ghost" onClick={handleClose}>
+          <Button variant="ghost" onClick={handleClose} mr={2}>
             Cancel
           </Button>
           <Button colorScheme="teal" onClick={handleInvites}>

@@ -7,13 +7,13 @@ export default function CustomFormCheckbox({ label, text, ...props }) {
   return (
     <>
       <FormLabel>{label}</FormLabel>
-      <Flex alignItems="center">
+      <Flex alignItems="center" className="mb-4">
         <Checkbox
           {...field}
           {...props}
           className={meta.touched && meta.error ? "text-red-300" : ""}
         />
-        <span>{text}</span>
+        <span className="ml-2">{text}</span>
       </Flex>
       {meta.touched && meta.error && <div>{meta.error}</div>}
     </>

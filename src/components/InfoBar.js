@@ -5,6 +5,7 @@ import {
   AccordionItem,
   AccordionPanel,
   Box,
+  useMediaQuery,
 } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 import MiniCalendar from "./ui/MiniCalendar";
@@ -21,6 +22,8 @@ export default function InfoBar({
   getEventListApi,
   eventList,
 }) {
+  const [isPhoneSize] = useMediaQuery("(max-width: 500px)");
+
   useEffect(() => {
     if (selectedCalendar) {
       getEventListApi(selectedCalendar.id);
@@ -29,8 +32,11 @@ export default function InfoBar({
 
   return (
     <div
-      style={{ width: "300px", maxHeight: "100vh" }}
-      className="bg-gradient-to-t from-slate-100 to-slate-50"
+      className={
+        isPhoneSize
+          ? "hidden"
+          : "bg-gradient-to-t from-slate-200 to-slate-50 max-h-screen w-[300px]"
+      }
     >
       <MiniCalendar
         calendarRef={calendarRef}

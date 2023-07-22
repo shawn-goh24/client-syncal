@@ -1,5 +1,5 @@
 import { ArrowLeftIcon, ArrowRightIcon } from "@chakra-ui/icons";
-import { Button, IconButton } from "@chakra-ui/react";
+import { Button, IconButton, useMediaQuery } from "@chakra-ui/react";
 import {
   addDays,
   addMonths,
@@ -11,16 +11,18 @@ import {
   subYears,
 } from "date-fns";
 import React from "react";
+import { Views } from "@/constants";
 
 export default function DateNavigations({
   calendarRef,
-  Views,
   selectedView,
   selectedDate,
   setSelectedDate,
   setSelectedMonth,
   today,
 }) {
+  const [isPhoneSize] = useMediaQuery("(max-width: 500px)");
+
   const handlePrevDate = () => {
     calendarRef.current.getApi().prev();
     if (selectedView === Views.Day) {
@@ -76,6 +78,7 @@ export default function DateNavigations({
   return (
     <div>
       <IconButton
+        size={isPhoneSize ? "sm" : "md"}
         variant="ghost"
         colorScheme="teal"
         aria-label="Previous"
@@ -83,6 +86,7 @@ export default function DateNavigations({
         onClick={handlePrevDate}
       />
       <Button
+        size={isPhoneSize ? "sm" : "md"}
         variant="ghost"
         colorScheme="teal"
         aria-label="Today"
@@ -97,6 +101,7 @@ export default function DateNavigations({
         Today
       </Button>
       <IconButton
+        size={isPhoneSize ? "sm" : "md"}
         variant="ghost"
         colorScheme="teal"
         aria-label="Next"

@@ -7,7 +7,7 @@ import listPlugin from "@fullcalendar/list";
 import interactionPlugin from "@fullcalendar/interaction";
 import moment from "moment";
 import { useState } from "react";
-import { Flex } from "@chakra-ui/react";
+import { Flex, useMediaQuery } from "@chakra-ui/react";
 import { AccessTokenContext } from "../pages/home/index";
 import axios from "axios";
 import AddEventModal from "./AddEventModal";
@@ -17,13 +17,7 @@ import InviteMembersModal from "./InviteMembersModal";
 import DateNavigations from "./ui/DateNavigations";
 import CalendarViewsTab from "./ui/CalendarViewsTab";
 import AvatarEventMenu from "./ui/AvatarEventMenu";
-
-const Views = {
-  Day: "day",
-  Week: "week",
-  Month: "month",
-  Year: "year",
-};
+import { Views } from "@/constants";
 
 export default function Calendar({
   selectedDate,
@@ -45,6 +39,7 @@ export default function Calendar({
   const [inviteMembersModal, setInviteMembersModal] = useState(false);
   const [calendarUsers, setCalendarUsers] = useState([]);
   const today = new Date();
+  const [isPhoneSize] = useMediaQuery("(max-width: 500px)");
   const accessToken = useContext(AccessTokenContext);
 
   useEffect(() => {
@@ -52,6 +47,10 @@ export default function Calendar({
       calendarRef.current.getApi().select(new Date(selectedDate));
     }
   }, [selectedDate]);
+
+  useEffect(() => {
+    isPhoneSize && calendarRef.current.getApi().changeView("timeGridWeek");
+  }, [isPhoneSize]);
 
   useEffect(() => {
     if (selectedCalendar) {
@@ -134,10 +133,9 @@ export default function Calendar({
 
   return (
     <div className="bg-slate-50 w-full pr-1">
-      <Flex justifyContent="space-between" alignItems="center" paddingY="12px">
+      <Flex className="justify-between items-center py-[12px]">
         <DateNavigations
           calendarRef={calendarRef}
-          Views={Views}
           selectedView={selectedView}
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
@@ -146,7 +144,6 @@ export default function Calendar({
         />
         <CalendarViewsTab
           calendarRef={calendarRef}
-          Views={Views}
           setSelectedView={setSelectedView}
           selectedDate={selectedDate}
           setSelectedMonth={setSelectedMonth}
@@ -169,7 +166,9 @@ export default function Calendar({
           listPlugin,
         ]}
         initialView={"dayGridMonth"}
-        headerToolbar={false}
+        headerToolbar={
+          isPhoneSize ? { start: "", center: "title", end: "" } : false
+        }
         events={events}
         editable={true}
         eventResizableFromStart={true}

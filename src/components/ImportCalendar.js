@@ -5,6 +5,7 @@ import {
   Button,
   Checkbox,
   FormLabel,
+  Heading,
   StackDivider,
   Text,
   VStack,
@@ -63,7 +64,9 @@ export default function ImportCalendar({
 
   return (
     <Box>
-      <FormLabel>Calendars</FormLabel>
+      <Heading as="h2" size="md" mb={2}>
+        Calendars
+      </Heading>
       <Text>Google</Text>
       <VStack
         divider={<StackDivider borderColor="gray.200" />}

@@ -10,7 +10,7 @@ export default function CustomFormTextarea({ label, ...props }) {
       <Textarea
         {...field}
         {...props}
-        className={meta.touched && meta.error ? "text-red-300" : ""}
+        className={meta.touched && meta.error ? "text-red-300 mb-4" : "mb-4"}
       />
       {meta.touched && meta.error && <div>{meta.error}</div>}
     </>
