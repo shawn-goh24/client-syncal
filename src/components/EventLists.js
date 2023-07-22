@@ -20,7 +20,7 @@ export default function EventLists({ events }) {
               <span className="font-bold text-black">
                 {moment(event.date).format("dddd").toUpperCase()}
               </span>{" "}
-              {event.date}
+              {moment(event.date).format("L")}
             </h1>
             {event.events.map((item) => (
               <Flex
