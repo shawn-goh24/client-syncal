@@ -16,6 +16,7 @@ import {
   Heading,
   Input,
   Text,
+  useMediaQuery,
   useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
@@ -31,6 +32,7 @@ export default function index({ user, accessToken }) {
   const [name, setName] = useState(user.name);
   const [userImagePreview, setUserImagePreview] = useState();
   const [userImageUrl, setUserImageUrl] = useState(user.avatarUrl);
+  const [isPhoneSize] = useMediaQuery("(max-width: 500px)");
   const router = useRouter();
 
   const toast = useToast();
@@ -147,7 +149,9 @@ export default function index({ user, accessToken }) {
         </Heading>
         <Flex
           justifyContent="space-between"
-          className="rounded-xl border-2 border-solid border-slate-200 p-8"
+          className={`rounded-xl border-2 border-solid border-slate-200 p-8 ${
+            isPhoneSize && "items-end"
+          }`}
         >
           <Flex alignItems="center">
             <Box as="label" className="hover:cursor-pointer mr-4 w-fit">
@@ -191,15 +195,16 @@ export default function index({ user, accessToken }) {
             </Flex>
           )}
         </Flex>
-        <Flex
-          justifyContent="space-between"
-          className="rounded-xl border-2 border-solid border-slate-200 p-8 mt-8"
-        >
-          <Box>
+        <Flex className="w-full rounded-xl border-2 border-solid border-slate-200 p-8 mt-8">
+          <Box className="w-full h-32">
             <Text as="b" fontSize="xl">
               Personal Information
             </Text>
-            <Flex className="mt-4">
+            <Flex
+              className={`mt-4 justify-between ${
+                isPhoneSize && "flex-col h-full mt-0 mb-4"
+              }`}
+            >
               <Box>
                 <Text fontSize="lg" color="gray.500">
                   Name
@@ -226,7 +231,7 @@ export default function index({ user, accessToken }) {
                   <Text fontSize="lg">{account.name}</Text>
                 )}
               </Box>
-              <Box className="ml-96">
+              <Box>
                 <Text fontSize="lg" color="gray.500">
                   Email
                 </Text>
@@ -253,7 +258,6 @@ export const getServerSideProps = withPageAuthRequired({
       const { accessToken } = await getAccessToken(context.req, context.res);
       const session = await getSession(context.req, context.res);
       const currUser = session?.user;
-      const userId = context.params.id;
 
       const getUserApi = async () => {
         const response = await axios.post(

@@ -10,6 +10,7 @@ import InfoBar from "@/components/InfoBar";
 import { Box } from "@chakra-ui/react";
 import Calendar from "@/components/Calendar";
 import axios from "axios";
+import Loader from "@/components/ui/Loader";
 
 export const AccessTokenContext = createContext();
 export const UserContext = createContext();
@@ -65,7 +66,7 @@ export default function index({ googleCalList }) {
     setCurrUser(request.data);
   };
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <Loader />;
   if (error) return <div>{error.message}</div>;
 
   return (
