@@ -66,7 +66,12 @@ export default function AddCalendarModal({
   };
 
   const addCalendarApi = async (values) => {
-    const imageUrl = await handleCalendarImageStorage(values);
+    let imageUrl;
+    if (calendarImagePreview) {
+      imageUrl = await handleCalendarImageStorage(values);
+    } else {
+      imageUrl = "";
+    }
 
     const response = await axios.post(
       `${process.env.SERVER}/calendar/add`,

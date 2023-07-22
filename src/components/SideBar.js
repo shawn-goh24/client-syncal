@@ -101,7 +101,7 @@ export default function Sidebar({
                       onClick={() => handleSelectGroup(calendar)}
                     >
                       <p style={{ color: "white" }}>
-                        {calendar.name.charAt(0)}
+                        {String(calendar.name.charAt(0)).toUpperCase()}
                       </p>
                     </Center>
                   )}
