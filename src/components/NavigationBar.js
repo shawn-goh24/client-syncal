@@ -27,17 +27,6 @@ export default function NavigationBar() {
       </Box>
       <Spacer />
       <ButtonGroup py="4" gap="2">
-        {/* <a href="https://dev-e27oql725amd8bwx.us.auth0.com/authorize?response_type=code&client_id=R91sYprWrLnH8ZVQbYtV8AAhyUmgymRR&redirect_uri=http://localhost:3000/home&scope=openid%20profile&state=xyzABC123">
-          Sign In
-        </a> */}
-        <Button
-          size={isPhoneSize ? "xs" : "sm"}
-          colorScheme="teal"
-          variant="ghost"
-          onClick={() => router.push("/api/auth/logout")}
-        >
-          Logout
-        </Button>
         <Button
           size={isPhoneSize ? "xs" : "sm"}
           colorScheme="teal"
@@ -57,9 +46,3 @@ export default function NavigationBar() {
     </Flex>
   );
 }
-
-export const getStaticProps = async () => {
-  const res = await fetch(`/api/testing`);
-  const result = await res.json();
-  console.log(result);
-};

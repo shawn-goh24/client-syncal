@@ -29,7 +29,9 @@ body {
 .group-button {
   background-color: gray;
   border-radius: 100%;
-  transition: border-radius 100ms linear, background-color 100ms linear;
+  transition:
+    border-radius 100ms linear,
+    background-color 100ms linear;
   height: 100%;
   width: 100%;
 }
@@ -48,9 +50,57 @@ body {
 }
 
 .rdp-day_today:not(.rdp-day_outside) {
-  color: red;
+  color: teal;
 }
 
 .rdp-row:has(.rdp-day_selected) {
-  background-color: lightgray;
+  background-color: #d8ebe3;
+}
+
+.rdp-row .rdp-cell .rdp-day_selected {
+  background-color: teal;
+  color: whitesmoke;
+}
+
+.sec-loading {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sec-loading .one {
+  height: 80px;
+  width: 80px;
+  border: 7px solid teal;
+  transform: rotate(45deg);
+  border-radius: 0 50% 50% 50%;
+  position: relative;
+  animation: move 0.5s linear infinite alternate-reverse;
+}
+.sec-loading .one::before {
+  content: "";
+  position: absolute;
+  height: 55%;
+  width: 55%;
+  border-radius: 50%;
+  border: 7px solid transparent;
+  border-top-color: teal;
+  border-bottom-color: teal;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: rotate 1s linear infinite;
+}
+
+@keyframes rotate {
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+@keyframes move {
+  to {
+    transform: translateY(15px) rotate(45deg);
+  }
 }

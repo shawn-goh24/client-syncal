@@ -1,11 +1,4 @@
 import {
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogOverlay,
-  Box,
   Button,
   Drawer,
   DrawerBody,
@@ -14,32 +7,24 @@ import {
   DrawerHeader,
   DrawerOverlay,
   Flex,
-  FormLabel,
-  Heading,
   IconButton,
-  Input,
-  Stat,
-  StatGroup,
-  StatLabel,
-  StatNumber,
-  Tag,
-  Text,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import CustomFormInput from "./ui/CustomFormInput";
 import CustomFormCheckbox from "./ui/CustomFormCheckbox";
 import CustomSelect from "./ui/CustomSelect";
 import CustomFormTextarea from "./ui/CustomFormTextarea";
 import moment from "moment";
 import { eventFormSchema } from "@/formSchema/formSchema";
-import { colorOptions } from "@/contants";
+import { colorOptions } from "@/constants";
 import axios from "axios";
 import { AccessTokenContext, UserContext } from "@/pages/home";
-import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
+import { DeleteIcon } from "@chakra-ui/icons";
 import Rsvp from "./Rsvp";
+import DeleteEventAlert from "./DeleteEventAlert";
 
 export default function EditEventDrawer({
   editEventDrawer,
@@ -53,7 +38,6 @@ export default function EditEventDrawer({
   const accessToken = useContext(AccessTokenContext);
   const currUser = useContext(UserContext);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const cancelRef = useRef();
   const toast = useToast();
   const [userEvent, setUserEvent] = useState();
   const [member, setMember] = useState();
@@ -67,14 +51,9 @@ export default function EditEventDrawer({
   }, [selectedEvent]);
 
   const handleEditEvent = (values, actions) => {
-    // console.log("Edited");
-    // console.log(values);
     const newValues = { ...values };
     if (newValues.allDay) {
-      console.log(endDate, moment(newValues.end).format("YYYY-MM-DD"));
-      // if (endDate !== moment(newValues.end).format("YYYY-MM-DD")) {
       newValues.end = moment(newValues.end).add(1, "day").format("YYYY-MM-DD");
-      // }
       newValues.start = moment(newValues.start).format("YYYY-MM-DD");
     }
     editEventApi(selectedEvent?.id, newValues);
@@ -95,11 +74,9 @@ export default function EditEventDrawer({
         },
       }
     );
-    // console.log(editedEvent.data);
     let eventList = [...events];
     const eventToReplace = eventList.findIndex((event) => event.id == eventId);
     eventList[eventToReplace] = editedEvent.data;
-    // console.log(eventList);
     setEvents(eventList);
     getEventListApi(selectedCalendarId);
     toast({
@@ -120,7 +97,6 @@ export default function EditEventDrawer({
       }
     );
 
-    // console.log(newEvents.data);
     setEvents(newEvents.data.Events);
     getEventListApi(selectedCalendarId);
     toast({
@@ -148,18 +124,13 @@ export default function EditEventDrawer({
         },
       }
     );
-    console.log(eventWithUser.data);
     setUserEvent(eventWithUser.data);
     eventWithUser.data === null || eventWithUser.data.roleId === 2
       ? setMember(true)
       : setMember(false);
   };
 
-  // check if user member
-  // allow rsvp, and no edits
-  // update stats
   return (
-    // selectedEvent && (
     <>
       <Drawer
         onClose={() => setEditEventDrawer((prev) => !prev)}
@@ -172,7 +143,6 @@ export default function EditEventDrawer({
           <DrawerHeader>
             <Flex alignItems="center">
               Edit Event
-              {/* {selectedEvent?.title} */}
               <span>
                 <IconButton
                   ml={4}
@@ -204,15 +174,9 @@ export default function EditEventDrawer({
                 : selectedEvent?.end
                 ? moment(selectedEvent?.end).format("YYYY-MM-DDTHH:mm")
                 : null,
-              // startDateTime: moment(selectedEvent.start).format(
-              //   "YYYY-MM-DDTHH:mm"
-              // ),
-              // endDateTime: moment(selectedEvent.end).format("YYYY-MM-DDTHH:mm"),
-              // startDate: moment(selectedEvent.start).format("YYYY-MM-DD"),
-              // endDate: moment(selectedEvent.end).format("YYYY-MM-DD"),
               color: getColor()?.value, // need utils function to get the color
-              description: selectedEvent?.description,
-              location: selectedEvent?.location,
+              description: selectedEvent?.extendedProps.description,
+              location: selectedEvent?.extendedProps.location,
               allDay: selectedEvent?.allDay,
             }}
             validationSchema={eventFormSchema}
@@ -225,8 +189,20 @@ export default function EditEventDrawer({
                     label="Title*"
                     name="title"
                     type="text"
+                    className="mb-4"
                     placeholder="Enter event title"
                     isReadOnly={member ? true : false}
+                  />
+                  <CustomSelect
+                    label="Color"
+                    name="color"
+                    isDisabled={member ? true : false}
+                    options={colorOptions}
+                    className="mb-4"
+                    onChange={(value) =>
+                      props.setFieldValue("color", value.value)
+                    }
+                    value={props.values.color}
                   />
                   <CustomFormCheckbox
                     name="allDay"
@@ -234,32 +210,11 @@ export default function EditEventDrawer({
                     defaultChecked={props.getFieldMeta().value.allDay}
                     isReadOnly={member ? true : false}
                   />
-                  <CustomSelect
-                    label="Color"
-                    name="color"
-                    isReadOnly={member ? true : false}
-                    options={colorOptions}
-                    onChange={(value) =>
-                      props.setFieldValue("color", value.value)
-                    }
-                    value={props.values.color}
-                    // defaultValue={() => {
-                    //   const index = colorOptions.findIndex(
-                    //     (color) =>
-                    //       color.value == selectedEvent?.backgroundColor
-                    //   );
-                    //   return colorOptions[index];
-                    // }}
-                  />
                   <CustomFormInput
                     isReadOnly={member ? true : false}
                     label="Starts"
-                    // name={
-                    //   props.getFieldMeta().value.allDay
-                    //     ? "startDate"
-                    //     : "startDateTime"
-                    // }
                     name="start"
+                    className="mb-4"
                     type={
                       props.getFieldMeta().value.allDay
                         ? "date"
@@ -278,12 +233,8 @@ export default function EditEventDrawer({
                   <CustomFormInput
                     isReadOnly={member ? true : false}
                     label="Ends"
-                    // name={
-                    //   props.getFieldMeta().value.allDay
-                    //     ? "endDate"
-                    //     : "endDateTime"
-                    // }
                     name="end"
+                    className="mb-4"
                     min={
                       props.getFieldMeta().value.allDay
                         ? moment(props.getFieldMeta().value.start).format(
@@ -343,41 +294,12 @@ export default function EditEventDrawer({
           </Formik>
         </DrawerContent>
       </Drawer>
-      <AlertDialog
+      <DeleteEventAlert
+        handleDeleteEvent={handleDeleteEvent}
+        setEditEventDrawer={setEditEventDrawer}
         isOpen={isOpen}
-        leastDestructiveRef={cancelRef}
         onClose={onClose}
-      >
-        <AlertDialogOverlay>
-          <AlertDialogContent>
-            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              Delete Event
-            </AlertDialogHeader>
-
-            <AlertDialogBody>
-              Are you sure? You can't undo this action afterwards.
-            </AlertDialogBody>
-
-            <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={onClose} mr={4}>
-                Cancel
-              </Button>
-              <Button
-                colorScheme="red"
-                onClick={() => {
-                  handleDeleteEvent();
-                  onClose();
-                  setEditEventDrawer((prev) => !prev);
-                }}
-                ml={3}
-              >
-                Delete
-              </Button>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialogOverlay>
-      </AlertDialog>
+      />
     </>
-    // )
   );
 }

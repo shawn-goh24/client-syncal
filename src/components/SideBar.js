@@ -1,6 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
 import syncalLogo from "../assets/syncal-logo.svg";
-import { Box, Center, IconButton, Tooltip } from "@chakra-ui/react";
+import {
+  Box,
+  Center,
+  IconButton,
+  Tooltip,
+  useMediaQuery,
+} from "@chakra-ui/react";
 import Image from "next/image";
 import { AccessTokenContext, UserContext } from "@/pages/home";
 import axios from "axios";
@@ -12,35 +18,42 @@ export default function Sidebar({
   setSelectedCalendar,
   calendars,
   setCalendars,
-  getGroupsApi,
 }) {
-  // const [calendars, setCalendars] = useState();
   const [addCalendarModal, setAddCalendarModal] = useState(false);
   const accessToken = useContext(AccessTokenContext);
   const currUser = useContext(UserContext);
+  const [isPhoneSize] = useMediaQuery("(max-width: 500px)");
 
   const handleSelectGroup = (cal) => {
-    console.log(cal);
     setSelectedCalendar(cal);
   };
 
-  // const getGroupsApi = async (userId) => {
-  //   const res = await axios.get(`${process.env.SERVER}/user/group/${userId}`, {
-  //     headers: {
-  //       Authorization: `Bearer ${accessToken}`,
-  //     },
-  //   });
-  //   // console.log(res.data.Calendars);
-  //   setCalendars(res.data.Calendars);
-  //   setSelectedCalendar(res.data.Calendars[0]);
-  // };
+  const getGroupsApi = async (userId, newCalendar) => {
+    const res = await axios.get(`${process.env.SERVER}/user/group/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    setCalendars(res.data.Calendars);
+    if (newCalendar) {
+      setSelectedCalendar(res.data.Calendars[res.data.Calendars.length - 1]);
+    } else {
+      setSelectedCalendar(res.data.Calendars[0]);
+    }
+  };
 
   useEffect(() => {
     currUser && getGroupsApi(currUser.id);
   }, [currUser]);
 
   return (
-    <Box bg="blue.100" width="100px" minHeight="100vh">
+    <Box
+      className={
+        isPhoneSize
+          ? `w-12 min-h-screen bg-gradient-to-t from-slate-200 to-slate-50 border-solid border-r-2 border-gray-300`
+          : `w-24 min-h-screen bg-gradient-to-t from-slate-200 to-slate-50 border-solid border-r-2 border-gray-300`
+      }
+    >
       <Center py="10px">
         <Image src={syncalLogo} alt="Syncal Logo" width={50} height={50} />
       </Center>
@@ -49,13 +62,21 @@ export default function Sidebar({
         {calendars &&
           calendars.map((calendar, id) => (
             <Box
-              width="100%"
-              pl="15px"
               key={calendar.id}
-              style={{ position: "relative" }}
+              className={isPhoneSize ? "my-1 relative" : `my-1.5 relative`}
             >
+              <div
+                className={
+                  selectedCalendar.id === calendar.id
+                    ? "block absolute -inset-0.5 my-0 bg-teal-600 rounded-lg blur opacity-75"
+                    : "hidden"
+                }
+              />
               <Tooltip hasArrow label={calendar.name} placement="right">
-                <Box boxSize="50px" my="6px">
+                <Center
+                  boxSize={isPhoneSize ? "35" : "50"}
+                  className="relative"
+                >
                   {calendar.imageUrl ? (
                     <Image
                       className={
@@ -63,15 +84,15 @@ export default function Sidebar({
                           ? "group-button-active"
                           : "group-button"
                       }
-                      width="50"
-                      height="50"
+                      width={isPhoneSize ? "35" : "50"}
+                      height={isPhoneSize ? "35" : "50"}
                       src={calendar.imageUrl}
                       alt={calendar.name}
                       onClick={() => handleSelectGroup(calendar)}
                     />
                   ) : (
                     <Center
-                      boxSize="50px"
+                      boxSize={isPhoneSize ? "35px" : "50px"}
                       className={
                         selectedCalendar.id === calendar.id
                           ? "group-button-active"
@@ -84,30 +105,16 @@ export default function Sidebar({
                       </p>
                     </Center>
                   )}
-                </Box>
+                </Center>
               </Tooltip>
-              <div
-                className={
-                  selectedCalendar.id === calendar.id ? "block" : "hidden"
-                }
-                style={{
-                  width: "5px",
-                  height: "50px",
-                  backgroundColor: "red",
-                  position: "absolute",
-                  borderRadius: "5px 0px 0px 5px",
-                  top: 6,
-                  right: 0,
-                }}
-              />
             </Box>
           ))}
       </Center>
       <Center my="6px">
         <IconButton
+          size={isPhoneSize ? "sm" : "lg"}
           colorScheme="teal"
           aria-label="New calendar"
-          size="lg"
           isRound
           icon={<AddIcon />}
           onClick={() => setAddCalendarModal((prev) => !prev)}
@@ -122,4 +129,3 @@ export default function Sidebar({
     </Box>
   );
 }
-// "bg-fuchsia-300 rounded-xl" : "bg-slate-500 rounded-full transition-all hover:bg-fuchsia-300 hover:rounded-xl hover:cursor-pointer"

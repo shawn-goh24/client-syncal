@@ -5,6 +5,7 @@ import {
   Button,
   Checkbox,
   FormLabel,
+  Heading,
   StackDivider,
   Text,
   VStack,
@@ -37,9 +38,6 @@ export default function ImportCalendar({
 
   const handleImport = () => {
     handleGoogleEventApi();
-    // Send post requst to API
-    // Get back non duplicated events
-    // Load new events to event state
   };
 
   const handleGoogleEventApi = async () => {
@@ -59,9 +57,6 @@ export default function ImportCalendar({
         },
       }
     );
-    console.log("Imported Events from google", response.data);
-    // const newEvents = [...events, ...response.data];
-    // console.log(newEvents);
     setEvents((prev) => [...prev, ...response.data]);
     setEditCalendarModal(false);
     setIsImporting(false);
@@ -69,7 +64,9 @@ export default function ImportCalendar({
 
   return (
     <Box>
-      <FormLabel>Calendars</FormLabel>
+      <Heading as="h2" size="md" mb={2}>
+        Calendars
+      </Heading>
       <Text>Google</Text>
       <VStack
         divider={<StackDivider borderColor="gray.200" />}

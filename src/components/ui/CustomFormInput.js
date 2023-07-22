@@ -10,9 +10,12 @@ export default function CustomFormInput({ label, ...props }) {
       <Input
         {...field}
         {...props}
-        className={meta.touched && meta.error ? "text-red-300" : ""}
+        isInvalid={meta.touched && meta.error ? true : false}
+        errorBorderColor={meta.touched && meta.error ? "crimson" : ""}
       />
-      {meta.touched && meta.error && <div>{meta.error}</div>}
+      {meta.touched && meta.error && (
+        <div className="text-red-600">{meta.error}</div>
+      )}
     </>
   );
 }

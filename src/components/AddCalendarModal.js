@@ -42,9 +42,6 @@ export default function AddCalendarModal({
   };
 
   const onAddCalendar = (values, actions) => {
-    // console.log(values);
-    // console.log(calendarImagePreview);
-    // console.log(calendarImageUrl);
     addCalendarApi(values);
     actions.resetForm();
     setCalendarImagePreview("");
@@ -85,7 +82,6 @@ export default function AddCalendarModal({
       }
     );
 
-    // console.log(response.data);
     setCalendars((prev) => [...prev, response.data]);
     getGroupsApi(currUser.id, true);
     toast({
