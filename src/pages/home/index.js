@@ -90,6 +90,7 @@ export default function index({ googleCalList }) {
               selectedCalendar={selectedCalendar}
               getEventListApi={getEventListApi}
               eventList={eventList}
+              setEventList={setEventList}
             />
             <Calendar
               calendarRef={calendarRef}

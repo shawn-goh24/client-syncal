@@ -53,7 +53,7 @@ export default function CalendarViewsTab({
 
   return (
     <>
-      <div className={isPhoneSize && "hidden"}>
+      <div className={isPhoneSize ? "hidden" : ""}>
         <Tabs variant="soft-rounded" colorScheme="green" defaultIndex={2}>
           <TabList>
             <Tab onClick={handleDay}>Day</Tab>
@@ -63,7 +63,7 @@ export default function CalendarViewsTab({
           </TabList>
         </Tabs>
       </div>
-      <div className={!isPhoneSize && "hidden"}>
+      <div className={!isPhoneSize ? "hidden" : ""}>
         <Select defaultValue="Week" onChange={handleViewChange}>
           <option value="Day">Day</option>
           <option value="Week">Week</option>
