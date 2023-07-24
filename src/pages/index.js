@@ -18,10 +18,16 @@ export default function Home() {
   const [activeFeature, setActiveFeature] = useState(1);
 
   return (
-    <Box className="bg-grayish-cyan">
+    <Box className=" bg-gradient-to-bl from-teal-200 to-yellow-200">
       <NavigationBar />
       <Center color="black" display="flex" flexDirection="column">
-        <Heading as="h1" size="4xl" textAlign="center" mt={80}>
+        <Heading
+          as="h1"
+          size="4xl"
+          textAlign="center"
+          mt={80}
+          fontWeight="extrabold"
+        >
           Sync Your Life <br />
           with Syncal
         </Heading>
@@ -38,7 +44,7 @@ export default function Home() {
           ))}
         </Flex>
         <Text
-          fontSize="6xl"
+          fontSize="5xl"
           className="mt-40 font-bold transition-opacity duration-150 ease-in opacity-100"
         >
           {imagesText[activeFeature]}
@@ -51,7 +57,7 @@ export default function Home() {
         alignItems="center"
         mt={48}
       >
-        <Text fontSize="4xl" className="font-semibold">
+        <Text fontSize="3xl" className="font-semibold">
           Achieve productivity <br />
           and peace with Syncal
         </Text>
@@ -59,7 +65,7 @@ export default function Home() {
           Get Started
         </Button>
       </Flex>
-      <Center bg="gray.100">Created by Shawn Goh</Center>
+      <Center>Created by Shawn Goh</Center>
     </Box>
   );
 }

@@ -5,15 +5,9 @@ export default handleAuth({
     await handleLogin(req, res, {
       returnTo: "/home",
       authorizationParams: {
-        audience: "https://syncal/api", // or AUTH0_AUDIENCE
-        // Add the `offline_access` scope to also get a Refresh Token
+        audience: process.env.AUTH0_AUDIENCE, // or AUTH0_AUDIENCE
         scope:
           "openid profile email read:current_user read:user_idp_tokens update:current_user_metadata", // or AUTH0_SCOPE
-        // connection: "google-oauth2",
-        // connection_scope:
-        //   "https://www.googleapis.com/auth/calendar.events.readonly",
-        // accessType: "offline",
-        // redirect_uri: "${process.env.CLIENT}/home",
       },
     });
   },
