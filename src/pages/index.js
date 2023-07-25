@@ -6,6 +6,7 @@ import calendar from "../assets/calendar.png";
 import FeatureComponent from "@/components/ui/FeatureComponent";
 import { useState } from "react";
 import { getSession } from "@auth0/nextjs-auth0";
+import Header from "@/components/Header";
 
 const images = [addEvent, homeImage, calendar];
 const imagesText = [
@@ -19,6 +20,7 @@ export default function Home() {
 
   return (
     <Box className="relative bg-grayish-cyan">
+      <Header title="Syncal" />
       <div className="w-56 h-56 bg-red-300 absolute -rotate-[30deg] top-24 left-1/4 rounded-3xl" />
       <div className="w-36 h-36 bg-blue-300/80 absolute -rotate-[30deg] top-48 left-1/3 rounded-3xl" />
       <div className="w-56 h-56 bg-green-300/70 absolute rotate-45 top-80 left-1/4 rounded-3xl" />

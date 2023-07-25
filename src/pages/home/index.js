@@ -11,6 +11,7 @@ import { Box } from "@chakra-ui/react";
 import Calendar from "@/components/Calendar";
 import axios from "axios";
 import Loader from "@/components/ui/Loader";
+import Header from "@/components/Header";
 
 export const AccessTokenContext = createContext();
 export const UserContext = createContext();
@@ -75,6 +76,7 @@ export default function Home({ googleCalList }) {
       <UserContext.Provider value={currUser}>
         <AccessTokenContext.Provider value={accessToken}>
           <Box display="flex">
+            <Header title="Home" />
             <Sidebar
               selectedCalendar={selectedCalendar}
               setSelectedCalendar={setSelectedCalendar}

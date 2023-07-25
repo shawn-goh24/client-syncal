@@ -25,6 +25,7 @@ import React, { useState } from "react";
 import { uploadBytes, getDownloadURL, ref as sRef } from "firebase/storage";
 import { storage } from "../../../../firebase";
 import { useRouter } from "next/router";
+import Header from "@/components/Header";
 
 export default function Profile({ user, accessToken }) {
   const [account, setAccount] = useState(user);
@@ -116,6 +117,7 @@ export default function Profile({ user, accessToken }) {
 
   return (
     <div className="bg-slate-200 h-screen pt-2">
+      <Header title="Profile" />
       <Container
         maxW="container.xl"
         className="w-full h-16 rounded-2xl bg-slate-50 shadow-lg shadow-slate-500 flex items-center justify-between"

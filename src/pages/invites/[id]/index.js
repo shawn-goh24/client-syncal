@@ -1,3 +1,4 @@
+import Header from "@/components/Header";
 import {
   getAccessToken,
   getSession,
@@ -46,6 +47,7 @@ export default function InvitesId({
 
   return (
     <div className="relative overflow-hidden">
+      <Header title="Invites" />
       <div className="absolute overflow-hidden rotate-45 h-[1080px] blur-3xl w-[3000px] -z-10 bg-gradient-to-r from-emerald-200 to-yellow-200" />
       <Flex className="bg-slate-200/40 backdrop-blur-lg absolute w-full z-50 items-center justify-between h-16 shadow-md">
         <Box className="font-black text-2xl p-4">synCal</Box>
