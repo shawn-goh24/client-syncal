@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "mocha"
   },
   "dependencies": {
     "@auth0/nextjs-auth0": "^2.6.2",
@@ -51,6 +52,8 @@
     "yup": "^1.2.0"
   },
   "devDependencies": {
+    "chai": "^4.3.7",
+    "mocha": "^10.2.0",
     "prettier": "^3.0.0",
     "prettier-plugin-tailwindcss": "^0.4.0"
   }
