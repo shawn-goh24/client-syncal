@@ -18,7 +18,13 @@ export default function Home() {
   const [activeFeature, setActiveFeature] = useState(1);
 
   return (
-    <Box className=" bg-gradient-to-bl from-teal-200 to-yellow-200">
+    <Box className="relative bg-grayish-cyan">
+      <div className="w-56 h-56 bg-red-300 absolute -rotate-[30deg] top-24 left-1/4 rounded-3xl" />
+      <div className="w-36 h-36 bg-blue-300/80 absolute -rotate-[30deg] top-48 left-1/3 rounded-3xl" />
+      <div className="w-56 h-56 bg-green-300/70 absolute rotate-45 top-80 left-1/4 rounded-3xl" />
+      <div className="w-56 h-56 bg-red-300 absolute rotate-[30deg] top-24 right-1/4 rounded-3xl" />
+      <div className="w-36 h-36 bg-blue-300/80 absolute rotate-[30deg] top-48 right-1/3 rounded-3xl" />
+      <div className="w-56 h-56 bg-green-300/70 absolute -rotate-45 top-80 right-1/4 rounded-3xl" />
       <NavigationBar />
       <Center color="black" display="flex" flexDirection="column">
         <Heading
@@ -26,10 +32,10 @@ export default function Home() {
           size="4xl"
           textAlign="center"
           mt={80}
-          fontWeight="extrabold"
+          fontWeight="semibold"
         >
           Sync Your Life <br />
-          with Syncal
+          with <span className="font-extrabold text-teal-600">Syncal</span>
         </Heading>
         <Flex className="mt-40">
           {images.map((image, id) => (
@@ -45,7 +51,7 @@ export default function Home() {
         </Flex>
         <Text
           fontSize="5xl"
-          className="mt-40 font-bold transition-opacity duration-150 ease-in opacity-100"
+          className="mt-20 font-semibold transition-opacity duration-150 ease-in opacity-100"
         >
           {imagesText[activeFeature]}
         </Text>
