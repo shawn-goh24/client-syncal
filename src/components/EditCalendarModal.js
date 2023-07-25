@@ -80,6 +80,10 @@ export default function EditCalendarModal({
     );
 
     setCalendars(response.data.Calendars);
+    const actualCalendar = response.data.Calendars.find(
+      (calendar) => calendar.id === selectedCalendar.id
+    );
+    setSelectedCalendar(actualCalendar);
     setEditCalendarModal((prev) => !prev);
     toast({
       title: "Calendar edited",
@@ -140,16 +144,17 @@ export default function EditCalendarModal({
       setCalendars(response.data.Calendars);
       setAlertDialog((prev) => !prev);
       setIsDeleteInvalid(false);
+      toast({
+        title: "Calendar deleted",
+        position: "top",
+        isClosable: true,
+        status: "success",
+      });
+      setSelectedCalendar(response.data.Calendars[0]);
     } else {
       setIsDeleteInvalid(true);
     }
     setDeleteInput("");
-    toast({
-      title: "Calendar deleted",
-      position: "top",
-      isClosable: true,
-      status: "success",
-    });
   };
 
   const handleLeaveCalendar = () => {

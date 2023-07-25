@@ -120,6 +120,12 @@ export const getServerSideProps = withPageAuthRequired({
     const code = context.query.code;
 
     try {
+      if (currUser.sub.split("|")[0] !== "google-oauth2") {
+        googleCalList = null;
+        return {
+          props: { googleCalList },
+        };
+      }
       // Check if refresh token exist in db
       const getRftFromDbApi = async () => {
         const response = await axios.post(
