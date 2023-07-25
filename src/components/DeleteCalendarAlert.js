@@ -38,7 +38,8 @@ export default function DeleteCalendarAlert({
           <AlertDialogHeader>Delete {selectedCalendar?.name}</AlertDialogHeader>
           <AlertDialogBody>
             <FormLabel>
-              To confirm, type "{selectedCalendar?.name}" in the box below
+              To confirm, type &quot;{selectedCalendar?.name}&quot; in the box
+              below
             </FormLabel>
             <Input
               isInvalid={isDeleteInvalid}

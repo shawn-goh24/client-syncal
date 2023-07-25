@@ -26,7 +26,7 @@ import { uploadBytes, getDownloadURL, ref as sRef } from "firebase/storage";
 import { storage } from "../../../../firebase";
 import { useRouter } from "next/router";
 
-export default function index({ user, accessToken }) {
+export default function Profile({ user, accessToken }) {
   const [account, setAccount] = useState(user);
   const [editAccount, setEditAccount] = useState(false);
   const [name, setName] = useState(user.name);

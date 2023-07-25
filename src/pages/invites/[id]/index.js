@@ -9,7 +9,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import React from "react";
 
-export default function index({
+export default function InvitesId({
   calendarDetails,
   isUserValid,
   currUser,

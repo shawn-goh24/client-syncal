@@ -15,7 +15,7 @@ import Loader from "@/components/ui/Loader";
 export const AccessTokenContext = createContext();
 export const UserContext = createContext();
 
-export default function index({ googleCalList }) {
+export default function Home({ googleCalList }) {
   const { user, error, isLoading } = useUser();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedMonth, setSelectedMonth] = useState(new Date());
