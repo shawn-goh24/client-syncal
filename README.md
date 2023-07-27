@@ -1,38 +1,76 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Syncal Client
 
-## Getting Started
+A web-based calendar sharing application that facilitates collaborative scheduling with friends and family. This platform allows multiple individuals to work together on the same calendar, making it easier to coordinate plans, events, and activities.
+_Project 4 for Rocket Academy Bootcamp_
 
-First, run the development server:
+### Preview
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+<!-- ![kaching gif](./src/assets/preview.gif) -->
+
+"Insert Image and Videos Here"
+
+## Features
+
+- Allowing users to login/signup, with the help of [Auth0](https://auth0.com/)
+- CRUD funtions for calendars and events
+- Having multiple calendars
+- Allowing user to invite other users into the same calendar and share their schedules
+- Enabling users to seamlessly import their Google Calendar events into the application.
+
+## Tech Used
+
+- Front end: [NextJS](https://nextjs.org/)
+- UI: [Chakra UI](https://chakra-ui.com/), [Tailwind CSS](https://tailwindcss.com/)
+- Storage: [Firebase](https://firebase.google.com/)
+- Backend: [Node.js](https://nodejs.org/en), [Express.js](https://expressjs.com/), [Sequelize](https://sequelize.org/)
+- Database: [PostgreSQL](https://www.postgresql.org/)
+
+## Setup
+
+**Pre-requisite: Need to have [Syncal Backend](https://github.com/shawn-goh24/backend-syncal) in order to run the full application. Guides on setting up the backend will be shown in that repository.**
+
+This project is created using create-react-app. Before starting, it is required to run the following steps for the application to work
+
+1. Clone repo to local
+
+2. Configure `.env` file, make sure to get your own API keys stated below and insert it into your `.env` file
+   - If unsure where to get API keys, refer to the Tech Used for the documents
+
+```
+SERVER = <Insert Sever URL>
+
+AUTH0_SECRET = <Insert Auth0 Secret>
+AUTH0_BASE_URL = <Insert Auth0 Base URL (e.g. localhost:3000)>
+AUTH0_ISSUER_BASE_URL = <Insert Auth0 Isser Base URL>
+AUTH0_CLIENT_ID = <Insert Auth0 Client ID>
+AUTH0_CLIENT_SECRET = <Insert Auth0 Client Secret>
+AUTH0_AUDIENCE = <Insert Auth0 Audience>
+
+FIREBASE_API = <Insert Firebase API key>
+FIREBASE_AUTH_DOMAIN = <Insert Firebase Auth Domain>
+FIREBASE_PROJECT_ID = <Insert Firebase Project ID>
+FIREBASE_STORAGE_BUCKET = <Insert Firebase Storage Bucket>
+FIREBASE_MESSAGING_SENDER_ID = <Insert Firebase Sender ID>
+FIREBASE_APP_ID = <Insert Firebase App ID>
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Install all dependencies required in this repo, and run locally
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+```
+npm i
+npm start
+```
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+4. Enjoy!
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## Future improvements
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- Mobile view
+- Change Auth0 email when user changes email
+- Include other calendar services (Microsoft Outlook & Apple Calendar)
+- Allow real-time updates/sync
+- Expanded customisation options for calendars and events
 
-## Learn More
+## Contributors
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- [Me, Shawn Goh](https://github.com/shawn-goh24)
